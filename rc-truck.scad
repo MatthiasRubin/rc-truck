@@ -21,6 +21,19 @@ module truck()
   translate([-50,-125,0]) rotate([0,180,0]) wheel();
   translate([-50,125,0]) rotate([0,180,0]) wheel();
   
+  translate([0,-200,35]) cabin();
+  translate([0,80,110]) box();
+}
+
+module box()
+{
+  cube([150,340,150], center = true);
+}
+
+module cabin()
+{
+  translate([0,50,50]) cube([150,100,100], center = true);
+  translate([0,15,-15]) cube([150,30,30], center = true);
 }
 
 

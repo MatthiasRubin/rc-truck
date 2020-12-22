@@ -11,5 +11,5 @@ truck();
 // this module is the fully assembled truck
 module truck()
 {
-  
+  cylinder(d = 60,h = 20);
 }

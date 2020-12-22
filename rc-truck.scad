@@ -39,7 +39,7 @@ module cabin()
 
 module frame()
 {
-  translate([0,0,20]) cube([50,370,20], center = true);
+  translate([0,0,25]) cube([50,370,30], center = true);
   
 }
 

@@ -1,4 +1,4 @@
-// this file shows the fully assembled truck
+// this file defines the fully assembled truck
 
 // used parts
 use <chassis.scad>
@@ -14,7 +14,10 @@ module truck()
   // add chassis
   chassis();
   
+  // add cabin in front
   translate([0,-200,35]) cabin();
+  
+  // add cargo box in the back
   translate([0,80,110]) cargoBox();
 }
 

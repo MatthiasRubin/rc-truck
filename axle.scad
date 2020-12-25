@@ -27,7 +27,6 @@ module axle()
 // axle housing top
 module housingTop()
 {
-  
   difference()
   {
     union()

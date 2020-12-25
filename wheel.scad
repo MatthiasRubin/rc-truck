@@ -1,4 +1,4 @@
-// this file the wheel
+// this file defines the wheel
 
 // used parts
 

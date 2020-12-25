@@ -12,7 +12,8 @@ axle();
 module axle()
 {
   // add housing
-  housing();
+  housingTop();
+  housingBottom();
   
   // add shaft
   shaft();
@@ -20,22 +21,37 @@ module axle()
   // add wheels
   translate([50,0,0]) wheel();
   translate([-50,0,0]) rotate([0,180,0]) wheel();
-  
 }
 
 
-// axle housing
-module housing()
+// axle housing top
+module housingTop()
 {
-  rotate([0,90,0]) 
+  
+  difference()
   {
-    translate([-5,0,0]) cube([10,20,50], center = true);
-    
-    difference()
+    union()
     {
-      cylinder(d = 20, h = 99, center = true);
-      cylinder(d = 8, h = 120, center = true);
+      rotate([0,90,0]) cylinder(d = 20, h = 99, center = true);
+      translate([0,0,5]) cube([50,20,10], center = true);
     }
+    
+    rotate([0,90,0]) cylinder(d = 8, h = 100, center = true);
+    
+    translate([0,0,-6]) cube([100,21,12], center = true);
+  }
+}
+
+
+// axle housing bottom
+module housingBottom()
+{
+  difference()
+  {
+    rotate([0,90,0]) cylinder(d = 20, h = 99, center = true);
+    rotate([0,90,0]) cylinder(d = 8, h = 100, center = true);
+    
+    translate([0,0,6]) cube([100,21,12], center = true);
   }
 }
 

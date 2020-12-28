@@ -1,4 +1,4 @@
-// this file defines the axle
+// this file defines the rear axle
 $fa = 5;
 $fs = 0.5;
 
@@ -7,12 +7,12 @@ $fs = 0.5;
 use <wheel.scad>
 
 
-// shows axle
-axle();
+// shows rear axle
+rearAxle();
 
 
-// axle
-module axle()
+// rear axle
+module rearAxle()
 {
   translate([0,0,-12.5])
   {

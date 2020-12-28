@@ -2,7 +2,8 @@
 
 // used parts
 use <frame.scad>
-use <axle.scad>
+use <rearAxle.scad>
+use <frontAxle.scad>
 
 
 // shows truck chassis
@@ -16,6 +17,6 @@ module chassis()
   frame();
   
   // add axles
-  translate([0,125,0]) axle();
-  translate([0,-125,0]) axle();
+  translate([0,125,0]) rearAxle();
+  translate([0,-125,0]) frontAxle();
 }

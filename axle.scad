@@ -1,5 +1,5 @@
 // this file defines the axle
-$fa = 10;
+$fa = 5;
 $fs = 0.5;
 
 
@@ -19,7 +19,7 @@ module axle()
     // add housing
     housingTop();
     housingBottom();
-  
+    
     // add shaft
     shaft();
   

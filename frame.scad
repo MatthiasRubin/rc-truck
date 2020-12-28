@@ -1,5 +1,5 @@
 // this file defines the truck frame
-$fa = 10;
+$fa = 5;
 $fs = 0.5;
 
 

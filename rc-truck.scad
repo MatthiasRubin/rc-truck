@@ -15,10 +15,10 @@ module truck()
   chassis();
   
   // add cabin in front
-  translate([0,-200,35]) cabin();
+  translate([0,-200,25]) cabin();
   
   // add cargo box in the back
-  translate([0,80,110]) cargoBox();
+  translate([0,80,100]) cargoBox();
 }
 
 

@@ -16,12 +16,20 @@ module frontAxle()
 {
   translate([0,0,-12.5])
   {
-    // add housing
-    housingTop();
-    housingBottom();
+    // add axle beam
+    axleBeamTop();
+    axleBeamBottom();
     
-    // add shaft
-    shaft();
+    // add steering knuckles
+    translate([42.5,0,0]) steeringKnuckle();
+    translate([-42.5,0,0]) mirror([1,0,0]) steeringKnuckle();
+    
+    // add steering rod
+    translate([0,27,4.6]) steeringRod();
+    
+    // add shafts
+    translate([42,0,0]) shaft();
+    translate([-42,0,0]) rotate([0,180,0]) shaft();
   
     // add wheels
     translate([50,0,0]) wheel();
@@ -30,98 +38,102 @@ module frontAxle()
 }
 
 
-// axle housing top
-module housingTop()
+module axleBeamTop()
 {
   difference()
   {
     union()
     {
-      // basic axle
-      rotate([0,90,0]) cylinder(d = 20, h = 99, center = true);
+      cube([90,8,25], center = true);
+      translate([45,0,0]) cylinder(d = 8, h = 25, center = true);
+      translate([-45,0,0]) cylinder(d = 8, h = 25, center = true);
       
-      // add support to mount axle
-      translate([20,0,0]) cube([10,18,25], center = true);
-      translate([-20,0,0]) cube([10,18,25], center = true);
-      
-      // add support to mount bottom
-      translate([30,8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([-30,8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([30,-8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([-30,-8,0]) cylinder(d = 8, h = 9.001, center = true);
+      translate([20,0,0]) cube([10,15,25], center = true);
+      translate([-20,0,0]) cube([10,15,25], center = true);
     }
     
-    // add hole for shaft
-    rotate([0,90,0]) cylinder(d = 8, h = 100, center = true);
+    translate([45,0,0]) cube([20,10,15.2], center = true);
+    translate([-45,0,0]) cube([20,10,15.2], center = true);
     
-    // add holes for screws to mount bottom
-    translate([30,8,0]) cylinder(d = 4.1, h = 30, center = true);
-    translate([-30,8,0]) cylinder(d = 4.1, h = 30, center = true);
-    translate([30,-8,0]) cylinder(d = 4.1, h = 30, center = true);
-    translate([-30,-8,0]) cylinder(d = 4.1, h = 30, center = true);
+    translate([45,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    translate([-45,0,0]) cylinder(d = 4.1, h = 30, center = true);
     
-    // add holes for screw heads
-    translate([30,8,4.5]) cylinder(d = 7.5, h = 5);
-    translate([-30,8,4.5]) cylinder(d = 7.5, h = 5);
-    translate([30,-8,4.5]) cylinder(d = 7.5, h = 5);
-    translate([-30,-8,4.5]) cylinder(d = 7.5, h = 5);
+    translate([20,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    translate([-20,0,0]) cylinder(d = 4.1, h = 30, center = true);
     
-    // add holes for screws to mount axle
-    translate([20,0,0]) cylinder(d = 4.1, h = 15);
-    translate([-20,0,0]) cylinder(d = 4.1, h = 15);
-    
-    // add holes for nuts
-    translate([20,0,0]) cylinder(d = 8, h = 8, $fn = 6);
-    translate([-20,0,0]) cylinder(d = 8, h = 8, $fn = 6);
-    
-    // remove top half
-    translate([0,0,-8]) cube([100,26,16], center = true);
+    translate([0,0,-10]) cube([100,20,20], center = true);
   }
 }
 
 
-// axle housing bottom
-module housingBottom()
+module axleBeamBottom()
 {
   difference()
   {
     union()
     {
-      // basic axle
-      rotate([0,90,0]) cylinder(d = 20, h = 99, center = true);
+      cube([90,8,25], center = true);
+      translate([45,0,0]) cylinder(d = 8, h = 25, center = true);
+      translate([-45,0,0]) cylinder(d = 8, h = 25, center = true);
       
-      // add support to mount top
-      translate([30,8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([-30,8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([30,-8,0]) cylinder(d = 8, h = 9.001, center = true);
-      translate([-30,-8,0]) cylinder(d = 8, h = 9.001, center = true);
+      translate([20,0,0]) cube([10,15,25], center = true);
+      translate([-20,0,0]) cube([10,15,25], center = true);
     }
     
-    // add hole for shaft
-    rotate([0,90,0]) cylinder(d = 8, h = 100, center = true);
+    translate([45,0,0]) cube([20,10,15.2], center = true);
+    translate([-45,0,0]) cube([20,10,15.2], center = true);
     
-    // add holes for screws to mount top
-    translate([30,8,0]) cylinder(d = 4.1, h = 20, center = true);
-    translate([-30,8,0]) cylinder(d = 4.1, h = 20, center = true);
-    translate([30,-8,0]) cylinder(d = 4.1, h = 20, center = true);
-    translate([-30,-8,0]) cylinder(d = 4.1, h = 20, center = true);
+    translate([0,0,-11]) cube([50.1,20,7], center = true);
     
-    // add holes for nuts
-    translate([30,8,-8]) cylinder(d = 8, h = 3.5, $fn = 6);
-    translate([-30,8,-8]) cylinder(d = 8, h = 3.5, $fn = 6);
-    translate([30,-8,-8]) cylinder(d = 8, h = 3.5, $fn = 6);
-    translate([-30,-8,-8]) cylinder(d = 8, h = 3.5, $fn = 6);
+    translate([45,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    translate([-45,0,0]) cylinder(d = 4.1, h = 30, center = true);
     
-    // remove top half
-    translate([0,0,6]) cube([100,26,12], center = true);
+    translate([20,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    translate([-20,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    
+    translate([20,0,-15]) cylinder(d = 8, h = 11, $fn = 6);
+    translate([-20,0,-15]) cylinder(d = 8, h = 11, $fn = 6);
+    
+    translate([0,0,10]) cube([100,20,20], center = true);
   }
+}
+
+
+// 
+module steeringKnuckle()
+{
+  difference()
+  {
+    union()
+    {
+      translate([3.5,0,0]) cube([7,15,15], center = true);
+      translate([2.5,0,0]) cylinder(d = 4, h = 24, center = true);
+      rotate([0,0,20]) translate([5.9,17,0]) cube([6.5,25,5], center = true);
+    }
+    
+    rotate([0,90,0]) cylinder(d = 8, h = 15, center = true);
+    translate([-3.5,27,-3]) cylinder(d = 4.1, h = 6);
+  }
+}
+
+
+// 
+module steeringRod()
+{
+  cube([78,7,4], center = true);
+  translate([39,0,0]) cylinder(d = 7, h = 4, center = true);
+  translate([-39,0,0]) cylinder(d = 7, h = 4, center = true);
+
+  translate([39,0,-9]) cylinder(d = 4, h = 9);
+  translate([-39,0,-9]) cylinder(d = 4, h = 9);
 }
 
 
 // shaft
 module shaft()
 {
-  rotate([0,90,0]) cylinder(d = 7, h = 120, center = true);
+  rotate([0,90,0]) cylinder(d = 7, h = 18);
+  rotate([0,-90,0]) cylinder(d = 12, h = 2);
 }
 
 

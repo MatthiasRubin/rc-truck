@@ -139,7 +139,10 @@ module steeringRod()
 module shaft()
 {
   // basic shaft
-  rotate([0,90,0]) cylinder(d = 7, h = 18);
+  rotate([0,90,0]) cylinder(d = 6, h = 13);
+  
+  // add wheel stop
+  rotate([0,90,0]) cylinder(d = 7.7, h = 8);
   
   // add end stop
   rotate([0,-90,0]) cylinder(d = 12, h = 2);

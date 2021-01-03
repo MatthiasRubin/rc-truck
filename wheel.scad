@@ -32,7 +32,7 @@ module wheel()
     }
   
     // add hole for shaft
-    rotate([0,90,0]) cylinder(d = 7.1,h = 20, center = true);
+    rotate([0,90,0]) cylinder(d = 6.1,h = 20, center = true);
   }
 }
 

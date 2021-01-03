@@ -1,4 +1,4 @@
-// this file defines the axle
+// this file defines the rear axle
 $fa = 5;
 $fs = 0.5;
 
@@ -7,12 +7,12 @@ $fs = 0.5;
 use <wheel.scad>
 
 
-// shows axle
-axle();
+// shows rear axle
+rearAxle();
 
 
-// axle
-module axle()
+// rear axle
+module rearAxle()
 {
   translate([0,0,-12.5])
   {
@@ -121,7 +121,20 @@ module housingBottom()
 // shaft
 module shaft()
 {
-  rotate([0,90,0]) cylinder(d = 7, h = 120, center = true);
+  difference()
+  {
+    union()
+    {
+      // basic shaft
+      rotate([0,90,0]) cylinder(d = 6, h = 110, center = true);
+  
+      // add wheel stop
+      rotate([0,90,0]) cylinder(d = 7.5, h = 100, center = true);
+    }
+      
+    // remove bottom to make it printable
+    translate([0,0,-7.5]) cube([120,10,10], center = true);
+  }
 }
 
 

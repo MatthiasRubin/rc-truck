@@ -3,10 +3,6 @@ $fa = 5;
 $fs = 0.5;
 
 
-// used parts
-
-
-
 // shows wheel
 wheel();
 

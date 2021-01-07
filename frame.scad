@@ -3,8 +3,8 @@ $fa = 5;
 $fs = 0.5;
 
 
-// used parts
-
+// used modules
+use <copy.scad>
 
 
 // shows truck frame
@@ -15,8 +15,7 @@ frame();
 module frame()
 {
   // put two halfs together
-  frameHalf();
-  rotate([0,0,180]) frameHalf();
+  rotateCopy([0,0,180]) frameHalf();
 }
 
 
@@ -41,12 +40,10 @@ module frameHalf()
     translate([0,160,25]) cube([30,30,15], center = true);
     
     // add holes to mount axles
-    translate([20,125,-5]) cylinder(d = 4.1, h = 30);
-    translate([-20,125,-5]) cylinder(d = 4.1, h = 30);
+    mirrorCopy([1,0,0]) translate([20,125,-5]) cylinder(d = 4.1, h = 30);
     
     // add holes to put halfs together
-    translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
-    translate([-10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
+    mirrorCopy([1,0,0]) translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
   } 
 }
 

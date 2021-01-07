@@ -1,4 +1,7 @@
 // this file defines the wheel
+
+
+// global definitions
 $fa = 5;
 $fs = 0.5;
 

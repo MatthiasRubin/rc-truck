@@ -1,6 +1,4 @@
 // this file defines the rear axle
-$fa = 5;
-$fs = 0.5;
 
 
 // used modules
@@ -9,6 +7,11 @@ use <copy.scad>
 
 // used parts
 use <wheel.scad>
+
+
+// global definitions
+$fa = 5;
+$fs = 0.5;
 
 
 // shows rear axle

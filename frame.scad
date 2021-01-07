@@ -1,10 +1,13 @@
 // this file defines the truck frame
-$fa = 5;
-$fs = 0.5;
 
 
 // used modules
 use <copy.scad>
+
+
+// global definitions
+$fa = 5;
+$fs = 0.5;
 
 
 // shows truck frame

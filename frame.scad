@@ -39,11 +39,14 @@ module frameHalf()
     translate([0,57.5,25]) cube([30,95,15], center = true);
     translate([0,160,25]) cube([30,30,15], center = true);
     
-    // add holes to mount axles
-    mirrorCopy([1,0,0]) translate([20,125,-5]) cylinder(d = 4.1, h = 30);
+    mirrorCopy([1,0,0])
+    {
+      // add holes to mount axles
+      translate([20,125,-5]) cylinder(d = 4.1, h = 30);
     
-    // add holes to put halfs together
-    mirrorCopy([1,0,0]) translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
+      // add holes to put halfs together
+      translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
+    }
   } 
 }
 

@@ -24,15 +24,15 @@ module frontAxle()
     axleBeamTop();
     axleBeamBottom();
     
-    rotateCopy([0,180,0]) 
+    rotateCopy([0,180,0])
     {
-      // add steering knuckle
+      // add steering knuckles
       translate([42.5,0,0]) steeringKnuckle();
       
-      // add shaft
+      // add shafts
       translate([42,0,0]) shaft();
       
-      // add wheel
+      // add wheels
       translate([50,0,0]) wheel();
     }
     
@@ -59,14 +59,17 @@ module axleBeamTop()
       mirrorCopy([1,0,0]) translate([20,0,0]) cube([10,15,25], center = true);
     }
     
-    // remove material for steering knuckles
-    mirrorCopy([1,0,0]) translate([45,0,0]) cube([20,10,15.2], center = true);
+    mirrorCopy([1,0,0])
+    {
+      // remove material for steering knuckles
+      translate([45,0,0]) cube([20,10,15.2], center = true);
     
-    // add holes for steering knuckles
-    mirrorCopy([1,0,0]) translate([45,0,0]) cylinder(d = 4.1, h = 30, center = true);
-    
-    // add holes for screws to mount axle
-    mirrorCopy([1,0,0]) translate([20,0,0]) cylinder(d = 4.1, h = 30, center = true);
+      // add holes for steering knuckles
+      translate([45,0,0]) cylinder(d = 4.1, h = 30, center = true);
+      
+      // add holes for screws to mount axle
+      translate([20,0,0]) cylinder(d = 4.1, h = 30, center = true);
+    }
     
     // remove bottom half
     translate([0,0,-10]) cube([100,20,20], center = true);
@@ -123,11 +126,14 @@ module steeringRod()
   // basic rod
   cube([78,7,4], center = true);
   
-  // add roundings
-  mirrorCopy([1,0,0]) translate([39,0,0]) cylinder(d = 7, h = 4, center = true);
+  mirrorCopy([1,0,0])
+  {
+    // add roundings
+    translate([39,0,0]) cylinder(d = 7, h = 4, center = true);
 
-  // add steering knuckle joints
-  mirrorCopy([1,0,0]) translate([39,0,-9]) cylinder(d = 4, h = 9);
+    // add steering knuckle joints
+    translate([39,0,-9]) cylinder(d = 4, h = 9);
+  }
 }
 
 

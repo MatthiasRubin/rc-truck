@@ -45,11 +45,11 @@ translate([0,20,0])
 // parametric gear
 
 // n: number of teeth
-// m: gear module
+// m: gear module (size of teeth)
 // h: gear height
 // coneAngle: cone angle for bevel gears
 // hole: hole diameter
-// holeFaces: shafe of hole
+// holeFaces: shape of hole
 module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
 {
   difference()
@@ -113,7 +113,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
 // get outer diameter of a spur gear
 
 // n: number of teeth
-// m: gear module
+// m: gear module (size of teeth)
 function getOuterGearDiameter(n, m = 1) = 
   let (factor = (m < 1) ? 1.1 : 1)
     m * (n + (7/3) * factor);
@@ -122,7 +122,7 @@ function getOuterGearDiameter(n, m = 1) =
 // get inner diameter of a spur gear
 
 // n: number of teeth
-// m: gear module
+// m: gear module (size of teeth)
 function getInnerGearDiameter(n, m = 1) = 
   m * (n - 7/3);
 
@@ -132,7 +132,7 @@ function getInnerGearDiameter(n, m = 1) =
 
 // n1: number of teeth of first gear
 // n2: number of teeth of second gear
-// m: gear module
+// m: gear module (size of teeth)
 function getSpurGearDistance(n1, n2, m = 1) = 
   m * (n1 + n2) / 2;
 
@@ -149,7 +149,7 @@ function getConeAngle(n1, n2) =
 
 // n: number of teeth
 // coneAngle: cone angle
-// m: gear module
+// m: gear module (size of teeth)
 function getBevelGearOffset(n, coneAngle = 45, m = 1) = 
   phase + m * n * cos(coneAngle - ((420*sin(coneAngle)) / (pi*n))) / (2*sin(coneAngle));
 

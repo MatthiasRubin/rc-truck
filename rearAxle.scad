@@ -3,6 +3,7 @@
 
 // used modules
 use <copy.scad>
+use <gears.scad>
 
 
 // used parts
@@ -12,6 +13,13 @@ use <wheel.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
+
+
+// local definitions
+inputGearAngle = getConeAngle(15, 30);
+outputGearAngle = getConeAngle(30, 15);
+inputGearOffset = getBevelGearOffset(15, inputGearAngle, 0.7);
+outputGearOffset = getBevelGearOffset(30, outputGearAngle, 0.7);
 
 
 // shows rear axle
@@ -24,12 +32,20 @@ module rearAxle()
   translate([0,0,-12.5])
   {
     // add housing
-    housingTop();
-    housingBottom();
+    //housingTop();
+    //housingBottom();
     
     // add shaft
-    shaft();
-  
+    leftShaft();
+    rotate([45,0,0]) rightShaft();
+    
+    inputGear();
+    outputGear();
+    
+    
+    translate([2.1 + outputGearOffset,0,0]) bearing();
+    rotateCopy([0,180,0]) translate([46,0,0]) bearing();
+   
     // add wheels
     rotateCopy([0,180,0]) translate([50,0,0]) wheel();
   }
@@ -116,23 +132,83 @@ module housingBottom()
 }
 
 
-// shaft
-module shaft()
+// left shaft
+module leftShaft()
 {
   difference()
   {
-    union()
+    union() 
     {
-      // basic shaft
-      rotate([0,90,0]) cylinder(d = 6, h = 110, center = true);
-  
-      // add wheel stop
-      rotate([0,90,0]) cylinder(d = 7.5, h = 100, center = true);
-    }
+      translate([outputGearOffset + 0.1,0,0]) rotate([0,90,0]) 
+        cylinder(d = 5.9, h = 50 - outputGearOffset);
       
-    // remove bottom to make it printable
-    translate([0,0,-7.5]) cube([120,10,10], center = true);
+      translate([-5,0,0]) rotate([45,0,0]) rotate([0,90,0]) 
+        cylinder(d = 5.9, h = 60, $fn = 4);
+      
+      translate([43.9,0,0]) rotate([0,-90,0])
+        cylinder(d1 = 8, d2 = 5.9, h = 2);
+    }
+     
+    translate([0,0,-10 - sqrt(5.9^2/2)/2]) cube([120,20,20], center = true);
   }
 }
 
+
+// right shaft
+module rightShaft()
+{
+  difference()
+  {
+    union() 
+    {
+      translate([-5.1,0,0]) rotate([0,-90,0]) 
+        cylinder(d = 5.9, h = 44.9);
+      
+      translate([-10,0,0]) rotate([45,0,0]) rotate([0,-90,0]) 
+        cylinder(d = 5.9, h = 45, $fn = 4);
+      
+      translate([-43.9,0,0]) rotate([0,90,0])
+        cylinder(d1 = 8, d2 = 5.9, h = 2);
+        
+      rotate([0,-90,0]) difference()
+      {
+        cylinder(d = 9, h = 6);
+        cylinder(d = 6, h = 10.2, $fn = 4, center = true);
+      }
+      
+      translate([-6,0,0]) rotate([0,-90,0])
+        cylinder(d1 = 9, d2 = 5.9, h = 6);
+    }
+     
+    translate([0,0,-10 - sqrt(5.9^2/2)/2]) cube([120,20,20], center = true);
+  }
+}
+
+
+// input gear
+module inputGear()
+{
+  render() translate([0,inputGearOffset,0]) rotate([90,0,0]) 
+    gear(15, 0.7, inputGearOffset/2, inputGearAngle, 4, 4);
+}
+
+
+// output gear
+module outputGear()
+{
+  render() translate([outputGearOffset,0,0]) rotate([0,-90,0])
+    gear(30, 0.7, outputGearOffset/2, outputGearAngle, 6, 4);
+}
+
+
+// bearing 
+module bearing()
+{
+  rotate([0,90,0]) difference()
+  {
+    cylinder(d = 12, h = 4, center = true);
+    
+    cylinder(d = 6, h = 4.2, center = true);
+  }
+}
 

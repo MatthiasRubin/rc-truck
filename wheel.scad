@@ -26,11 +26,11 @@ module wheel()
         translate([10,0,0]) rotate([0,90,0]) cylinder(d1 = 30, d2 = 50, h = 20);
       }
       
-      // add support to hold shaft
+      // support to hold shaft
       rotate([0,90,0]) cylinder(d = 12,h = 15);
     }
   
-    // add hole for shaft
+    // hole for shaft
     rotate([0,90,0]) cylinder(d = 6,h = 20, center = true);
   }
 }

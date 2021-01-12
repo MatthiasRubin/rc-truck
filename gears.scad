@@ -74,7 +74,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
         translate([0,0,h - 2*phase]) cylinder(d = 2*n*m, h = 10*m);
       }
       
-      // add phase
+      // phase
       if (coneAngle == 0)
       {
         // spur gear phase
@@ -96,14 +96,14 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
     {
       translate([0,0,-0.5])
       {
-        // add hole
+        // hole
         rotate([0,0,180/holeFaces - 90]) cylinder(d = hole, h = h+1, $fn = holeFaces);
         
-        // add bottom hole phase
+        // bottom hole phase
         cylinder(d = hole + 2*phase, h = phase + 0.5);
       }
       
-      // add top hole phase
+      // top hole phase
       translate([0,0,h - phase]) cylinder(d = hole + 2*phase, h = phase + 0.5);
     }
   }

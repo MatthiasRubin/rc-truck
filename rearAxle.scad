@@ -48,6 +48,12 @@ wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
 outputShaftDiameter = outputBearingInnerDiameter - 0.1;
 
+// screws
+screwDiameter = 3;
+screwHeadDiameter = 5.5;
+nutDiameter = 6.01;
+nutWidth = 2.4;
+
 
 // shows rear axle
 rearAxle();
@@ -136,6 +142,7 @@ module basicHousing(width)
     // shaft connection
     shaftConnectionHole = outputShaftDiameter + 2*strongWall + 2*thinWall;
     shaftConnectionHoleDepth = outputShaftDiameter + strongWall/2 + thinWall + outputGearOffset;
+    shaftTransitionWidth = 3*strongWall;
     
     // output gear
     outputGearHole = 2*inputGearOffset + 2*thinWall;
@@ -151,27 +158,23 @@ module basicHousing(width)
     inputGearHoleDepth = inputGearOffset/2 + 2*thinWall;
     inputGearHoleOffset = inputGearOffset + thinWall;
     
+    // housing mount
+    screwHole = screwDiameter + 0.2;
+    nutHole = nutDiameter + 0.2;
+    supportThickness = 4*strongWall;
+    leftScrewX = outputGearHoleOffset + thinWall + nutDiameter/2;
+    leftScrewY = sqrt(outputBearingHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
+    rightScrewX = sqrt(inputGearHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
+    holeDiameter = (shaftConnectionHole + outputShaftHole)/2;
+    rightScrewY = sqrt(holeDiameter^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
+    backScrewX = outputGearHoleOffset - outputGearHoleDepth - thinWall - nutDiameter/2;
+    backScrewY = sqrt(shaftConnectionHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
+    
     union()
     {
       // shaft housing
       housingDiameter = outputShaftHole + 2*strongWall;
       rotate([0,90,0]) cylinder(d = housingDiameter, h = housingWidth, center = true);
-      
-      // housing for output bearing
-      outputBearingHousingDiameter = outputBearingHole + 2*strongWall;
-      outputBearingHousingWidth = outputBearingHoleDepth + 2*thinWall;
-      translate([outputBearingOffset,0,0]) rotate([0,90,0]) 
-        cylinder(d = outputBearingHousingDiameter, h = outputBearingHousingWidth, center = true);
-      
-      // housing for wheel bearing
-      mirrorCopy([1,0,0]) translate([wheelBearingOffset,0,0]) rotate([0,90,0]) 
-        cylinder(d = outputBearingHousingDiameter, h = outputBearingHousingWidth, center = true);
-      
-      // housing for shaft connection
-      shaftConnectionHousingDiameter = shaftConnectionHole + 2*strongWall;
-      shaftConnectionHousingWidth = shaftConnectionHoleDepth + thinWall;
-      translate([outputGearOffset,0,0]) rotate([0,-90,0]) 
-        cylinder(d = shaftConnectionHousingDiameter, h = shaftConnectionHousingWidth);
       
       // housing for output gear
       outputGearHousingDiameter = outputGearHole + 2*strongWall;
@@ -180,17 +183,56 @@ module basicHousing(width)
       translate([outputGearHousingOffset,0,0]) rotate([0,-90,0])
         cylinder(d = outputGearHousingDiameter, h = outputGearHousingWidth);
       
+      // housing for output bearing
+      outputBearingHousingDiameter = outputBearingHole + 2*strongWall;
+      outputBearingHousingWidth = outputBearingHoleDepth + 2*thinWall;
+      translate([outputBearingOffset,0,0]) rotate([0,90,0]) 
+        cylinder(d = outputBearingHousingDiameter, h = outputBearingHousingWidth, center = true);
       
-      //translate([9,0,0]) rotate([0,90,0]) cylinder(d1 = 27, d2 = 12, h = 5);
-      //rotate([0,90,0]) cylinder(d1 = 16, d2 = 27, h = 2);
-      //translate([-8,0,0]) rotate([0,-90,0]) cylinder(d1 = 16, d2 = 12, h = 5);
+      // transition to output bearing
+      outputBearingTransitionOffset = outputBearingOffset + outputBearingHousingWidth/2;
       
-      //mirrorCopy([1,0,0]) translate([40,0,0]) rotate([0,90,0]) cylinder(d1 = 12, d2 = 16, h = 2);
+      // from output gear
+      outputBearingTransitionWidth1 = outputBearingTransitionOffset - outputGearHousingOffset;
+      translate([outputBearingTransitionOffset,0,0]) rotate([0,-90,0]) 
+        cylinder(d1 = outputBearingHousingDiameter, d2 = outputGearHousingDiameter, 
+          h = outputBearingTransitionWidth1);
+        
+      // from shaft
+      outputBearingTransitionWidth2 = (outputBearingHousingDiameter - housingDiameter)/2;
+      translate([outputBearingTransitionOffset,0,0]) rotate([0,90,0]) 
+        cylinder(d1 = outputBearingHousingDiameter, d2 = housingDiameter, 
+          h = outputBearingTransitionWidth2);
       
-      // housing for input bearing
-      inputBearingHousingDiameter = inputBearingHole + 2*strongWall;
-      inputBearingHousingWidth = inputBearingHoleDepth + thinWall;
-      rotate([90,0,0]) cylinder(d = inputBearingHousingDiameter, h = inputBearingHousingWidth);
+      // housing for wheel bearing
+      mirrorCopy([1,0,0]) translate([wheelBearingOffset,0,0]) rotate([0,90,0]) 
+        cylinder(d = outputBearingHousingDiameter, h = outputBearingHousingWidth, center = true);
+      
+      // transition to wheel bearing housing
+      wheelBearingTransitionOffset = wheelBearingOffset - outputBearingHousingWidth/2;
+      wheelBearingTransitionWidth = (outputBearingHousingDiameter - housingDiameter)/2;
+      mirrorCopy([1,0,0]) translate([wheelBearingTransitionOffset,0,0]) rotate([0,-90,0]) 
+        cylinder(d1 = outputBearingHousingDiameter, d2 = housingDiameter, 
+          h = wheelBearingTransitionWidth);
+      
+      // housing for shaft connection
+      shaftConnectionHousingDiameter = shaftConnectionHole + 2*strongWall;
+      shaftConnectionHousingWidth = shaftConnectionHoleDepth + thinWall;
+      translate([outputGearOffset,0,0]) rotate([0,-90,0]) 
+        cylinder(d = shaftConnectionHousingDiameter, h = shaftConnectionHousingWidth);
+      
+      // transition to output gear
+      outputGearTransitionOffset = outputGearHousingOffset - outputGearHousingWidth;
+      outputGearTransitionWidth = (outputGearHousingDiameter - shaftConnectionHousingDiameter)/3;
+      translate([outputGearTransitionOffset,0,0]) rotate([0,-90,0]) 
+        cylinder(d1 = outputGearHousingDiameter, d2 = shaftConnectionHousingDiameter, 
+          h = outputGearTransitionWidth);
+      
+      // transition to shaft connection
+      shaftGearTransitionOffset = shaftConnectionHousingWidth - outputGearOffset;
+      translate([-shaftGearTransitionOffset,0,0]) rotate([0,-90,0]) 
+        cylinder(d1 = shaftConnectionHousingDiameter, d2 = housingDiameter, 
+          h = shaftTransitionWidth);
       
       // housing for input gear
       inputGearHousingDiameter = inputGearHole + 2*strongWall;
@@ -198,72 +240,147 @@ module basicHousing(width)
       inputGearHousingWidth = inputGearHoleDepth + 2*thinWall;
       translate([0,-inputGearHousingOffset,0]) rotate([-90,0,0])
         cylinder(d = inputGearHousingDiameter, h = inputGearHousingWidth);
+        
+      // transition to input gear
+      inputGearTransitionOffset = inputGearHousingOffset - inputGearHousingWidth;
+      translate([0,-inputGearTransitionOffset,0]) rotate([-90,0,0]) 
+        cylinder(d1 = inputGearHousingDiameter, d2 = shaftConnectionHousingDiameter, 
+          h = inputGearTransitionOffset);
       
+      // housing for input bearing
+      inputBearingHousingDiameter = inputBearingHole + 2*strongWall;
+      inputBearingHousingWidth = inputBearingHoleDepth + thinWall;
+      rotate([90,0,0]) cylinder(d = inputBearingHousingDiameter, h = inputBearingHousingWidth);
       
-      //rotate([-90,0,0]) cylinder(d1 = 16, d2 = 17, h = 12);
-      //rotate([-90,0,0]) cylinder(d = 12, h = 15.5);
-      //translate([0,12,0]) rotate([-90,0,0]) cylinder(d1 = 17, d2 = 12, h = 2);
+      // transition to input bearing
+      inputBearingTransitionWidth = inputBearingHousingWidth - inputGearHousingOffset;
+      translate([0,-inputGearHousingOffset,0]) rotate([90,0,0]) 
+        cylinder(d1 = inputGearHousingDiameter, d2 = inputBearingHousingDiameter, 
+          h = inputBearingTransitionWidth);
       
+      // support to screw halfs together
+      supportDiameter = max(screwHole + 2*strongWall, nutHole);
       
-      // support to mount top
-      //translate([10.5,9,0]) cylinder(d = 7, h = 4, center = true);
-      //translate([-9.5,8.5,0]) cylinder(d = 7, h = 4, center = true);
-      //translate([-1.5,-9,0]) cylinder(d = 7, h = 4, center = true);
+      // left
+      translate([leftScrewX,-leftScrewY,0])
+        cylinder(d = supportDiameter, h = supportThickness, center = true);
+      
+      // right
+      translate([-rightScrewX,-rightScrewY,0]) 
+        cylinder(d = supportDiameter, h = supportThickness, center = true);
+      
+      // back
+      translate([backScrewX,backScrewY,0]) 
+        cylinder(d = supportDiameter, h = supportThickness, center = true);
     }
     
     // hole for output shaft
     rotate([0,90,0]) cylinder(d = outputShaftHole, h = housingWidth+1, center = true);
     
+    // hole for output gear
+    translate([outputGearHoleOffset,0,0]) rotate([0,-90,0]) 
+      cylinder(d = outputGearHole, h = outputGearHoleDepth);
+        
+    // transition to output gear
+    outputGearTransitionOffset = outputGearHoleOffset - outputGearHoleDepth;
+    translate([outputGearTransitionOffset,0,0]) rotate([0,-90,0]) 
+      cylinder(d1 = outputGearHole, d2 = shaftConnectionHole, 
+        h = outputGearTransitionOffset);
+    
     // hole for output bearing
     translate([outputBearingOffset,0,0]) rotate([0,90,0]) 
       cylinder(d = outputBearingHole, h = outputBearingHoleDepth, center = true);
     
+    // transition to output bearing
+    outputBearingTransitionOffset = outputBearingOffset + outputBearingHoleDepth/2;
+    outputBearingTransitionWidth = 2*thinWall;
+    outputBearingTransitionDiameter = outputBearingHole - 2*thinWall;
+    translate([outputBearingTransitionOffset,0,0]) rotate([0,90,0]) 
+      cylinder(d1 = outputBearingTransitionDiameter, d2 = outputShaftHole, 
+        h = outputBearingTransitionWidth);
+    
     // holes for wheel bearings
     mirrorCopy([1,0,0]) translate([wheelBearingOffset,0,0]) rotate([0,90,0]) 
       cylinder(d = outputBearingHole, h = outputBearingHoleDepth, center = true);
+
+    // transition to wheel bearings
+    wheelBearingTransitionOffset = wheelBearingOffset - outputBearingHoleDepth/2;
+    wheelBearingTransitionWidth = 2*thinWall;
+    mirrorCopy([1,0,0]) translate([wheelBearingTransitionOffset,0,0]) rotate([0,-90,0]) 
+      cylinder(d1 = outputBearingTransitionDiameter, d2 = outputShaftHole, 
+        h = wheelBearingTransitionWidth);
     
     // hole for shaft connection
     translate([outputGearOffset,0,0]) rotate([0,-90,0]) 
       cylinder(d = shaftConnectionHole, h = shaftConnectionHoleDepth);
-    
-    // hole for output gear
-    translate([outputGearHoleOffset,0,0]) rotate([0,-90,0]) 
-      cylinder(d = outputGearHole, h = outputGearHoleDepth);
-    
-    //translate([3,0,0]) rotate([0,90,0]) cylinder(d = 23, h = 4);
-    //translate([1,0,0]) rotate([0,90,0]) cylinder(d1 = 10, d2 = 23, h = 2);
-    //translate([1.7,0,0]) rotate([0,90,0]) cylinder(d = 12.1, h = 17.4, center = true);
-    //translate([10.3,0,0]) rotate([0,90,0]) cylinder(d1 = 11, d2 = 8, h = 3);
-    //translate([-7,0,0]) rotate([0,-90,0]) cylinder(d1 = 12.1, d2 = 8, h = 5);
-    //mirrorCopy([1,0,0]) translate([41.8,0,0]) rotate([0,90,0]) cylinder(d1 = 8, d2 = 12.1, h = 2);
-    //mirrorCopy([1,0,0]) translate([43.8,0,0]) rotate([0,90,0]) cylinder(d = 12.1, h = 3.2);
-    
+
+    // transition to shaft connection
+    shaftTransitionOffset = shaftConnectionHoleDepth - outputGearOffset;
+    translate([-shaftTransitionOffset,0,0]) rotate([0,-90,0]) 
+      cylinder(d1 = shaftConnectionHole, d2 = outputShaftHole, h = shaftTransitionWidth);
+
     // hole for input shaft
     inputShaftHole = inputShaftDiameter + 2*thinWall;
     inputShaftHoleDepth = inputBearingHoleDepth + thinWall + 1;
     rotate([90,0,0]) cylinder(d = inputShaftHole, h = inputShaftHoleDepth);
     
-    // hole for input bearing
-    rotate([90,0,0]) cylinder(d = inputBearingHole, h = inputBearingHoleDepth);
-    
     // hole for input gear
     translate([0,-inputGearHoleOffset,0]) rotate([-90,0,0]) 
       cylinder(d = inputGearHole, h = inputGearHoleDepth);
+        
+    // transition to input gear
+    inputGearTransitionOffset = inputGearHoleOffset - inputGearHoleDepth;
+    translate([0,-inputGearTransitionOffset,0]) rotate([-90,0,0]) 
+      cylinder(d1 = inputGearHole, d2 = shaftConnectionHole, 
+        h = inputGearTransitionOffset);
     
+    // hole for input bearing
+    rotate([90,0,0]) cylinder(d = inputBearingHole, h = inputBearingHoleDepth);
     
-    //rotate([-90,0,0]) cylinder(d = 7, h = 20);
-    //rotate([-90,0,0]) cylinder(d = 8.1, h = 14.3);
-    //translate([0,10,0]) rotate([-90,0,0]) cylinder(d1 = 14, d2 = 8.1, h = 2);
-    //rotate([-90,0,0]) cylinder(d1 = 4, d2 = 14, h = 10);
+    // holes to screw halfs together
+    screwHeadHole = screwHeadDiameter + 0.2;
+    screwHeadOffset = supportThickness/2;
+    nutHoleDepth = nutWidth + 0.2;
+    nutHoleOffset = nutHoleDepth + supportThickness/2;
     
-    // holes for screws to mount top
-    //translate([10.5,9,0]) cylinder(d = 3.1, h = 30, center = true);
-    //translate([-9.5,8.5,0]) cylinder(d = 3.1, h = 30, center = true);
-    //translate([-1.5,-9,0]) cylinder(d = 3.1, h = 30, center = true);
+    // left
+    translate([leftScrewX,-leftScrewY,0])
+    {
+      // hole for screw
+      cylinder(d = screwHole, h = supportThickness+1, center = true);
+      
+      // hole for screw head
+      translate([0,0,screwHeadOffset]) cylinder(d = screwHeadHole, h = outputGearHole);
+      
+      // hole for nut
+      translate([0,0,-nutHoleOffset]) cylinder(d = nutHole, h = nutHoleDepth, $fn = 6);
+    }
     
-    //translate([10.5,9,-12]) cylinder(d = 6.4, h = 10, $fn = 6);
-    //translate([-9.5,8.5,-12]) cylinder(d = 6.4, h = 10, $fn = 6);
-    //translate([-1.5,-9,-12]) cylinder(d = 6.4, h = 10, $fn = 6);
+    // right
+    translate([-rightScrewX,-rightScrewY,0]) 
+    {
+      // hole for screw
+      cylinder(d = screwHole, h = supportThickness+1, center = true);
+      
+      // hole for screw head
+      translate([0,0,screwHeadOffset]) cylinder(d = screwHeadHole, h = outputGearHole);
+      
+      // hole for nut
+      translate([0,0,-nutHoleOffset]) cylinder(d = nutHole, h = nutHoleDepth, $fn = 6);
+    }
+    
+    // back
+    translate([backScrewX,backScrewY,0]) 
+    {
+      // hole for screw
+      cylinder(d = screwHole, h = supportThickness+1, center = true);
+      
+      // hole for screw head
+      translate([0,0,screwHeadOffset]) cylinder(d = screwHeadHole, h = outputGearHole);
+      
+      // hole for nut
+      translate([0,0,-nutHoleOffset]) cylinder(d = nutHole, h = nutHoleDepth, $fn = 6);
+    }
   }
 }
 

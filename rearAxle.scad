@@ -272,6 +272,9 @@ module basicHousing(width)
       // back
       translate([backScrewX,backScrewY,0]) 
         cylinder(d = supportDiameter, h = supportThickness, center = true);
+        
+      // support to mount axle
+      mirrorCopy([1,0,0]) translate([20,0,6.25]) cube([10,10,12.5], center = true);
     }
     
     // hole for output shaft
@@ -380,6 +383,16 @@ module basicHousing(width)
       
       // hole for nut
       translate([0,0,-nutHoleOffset]) cylinder(d = nutHole, h = nutHoleDepth, $fn = 6);
+    }
+     
+    // holes to mount axle
+    mirrorCopy([1,0,0]) translate([20,0,0])
+    {
+      // hole for screws
+      cylinder(d = screwHole, h = 20);
+    
+      // hole for nuta
+      cylinder(d = nutHole, h = nutHoleDepth + outputShaftHole/2, $fn = 6);
     }
   }
 }

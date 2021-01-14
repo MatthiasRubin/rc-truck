@@ -31,7 +31,7 @@ module rearWheel()
     }
   
     // hole for shaft
-    rotate([0,90,0]) cylinder(d = 6,h = 20, $fn = 4, center = true);
+    rotate([0,90,0]) cylinder(d = 7,h = 20, $fn = 4, center = true);
   }
 }
 

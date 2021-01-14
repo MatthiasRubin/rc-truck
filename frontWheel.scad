@@ -1,4 +1,4 @@
-// this file defines the wheel
+// this file defines the front wheel
 
 
 // global definitions
@@ -6,12 +6,12 @@ $fa = 5;
 $fs = 0.5;
 
 
-// shows wheel
-wheel();
+// shows front wheel
+frontWheel();
 
 
-// wheel
-module wheel()
+// front wheel
+module frontWheel()
 {
   difference()
   {

@@ -67,7 +67,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
         else
         {
           // bevel gear
-          kegelrad(m, n,  coneAngle, (h) / cos(coneAngle), 0);
+          kegelrad(m, n,  coneAngle, h / cos(coneAngle), 0);
         }
         
         // remove protruding teeth at the top

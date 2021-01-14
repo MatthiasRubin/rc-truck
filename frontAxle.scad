@@ -1,6 +1,4 @@
 // this file defines the front axle
-$fa = 5;
-$fs = 0.5;
 
 
 // used modules
@@ -8,7 +6,12 @@ use <copy.scad>
 
 
 // used parts
-use <wheel.scad>
+use <frontWheel.scad>
+
+
+// global definitions
+$fa = 5;
+$fs = 0.5;
 
 
 // shows front axle
@@ -33,7 +36,7 @@ module frontAxle()
       translate([42,0,0]) shaft();
       
       // add wheels
-      translate([50,0,0]) wheel();
+      translate([50,0,0]) frontWheel();
     }
     
     // add steering rod

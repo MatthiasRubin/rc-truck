@@ -14,15 +14,15 @@ $fs = 0.5;
 motor();
 
 
-// front wheel
-
-
+// assembled motor
 module motor()
 {
   translate([0,0,-31.8]) motorDummy();
   rotateCopy([0,0,180]) motorMount();
 }
 
+
+// motor mount
 module motorMount()
 {
   translate([0,15.5,0]) difference()
@@ -35,6 +35,7 @@ module motorMount()
 }
 
 
+// motor dummy
 module motorDummy()
 {
   difference()

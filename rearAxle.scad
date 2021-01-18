@@ -59,7 +59,7 @@ nutWidth = 2.4;
 rearAxle();
 
 
-// rear axle
+// assembled rear axle
 module rearAxle(width = 140)
 {
   translate([0,0,-12.5])

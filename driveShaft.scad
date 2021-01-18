@@ -106,7 +106,7 @@ module cross()
 // yoke
 module yoke()
 {
-  !difference()
+  difference()
   {
     translate([0,-1,0])
     {

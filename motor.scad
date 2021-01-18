@@ -48,7 +48,7 @@ module motorMount()
 // motor dummy
 module motorDummy()
 {
-  !difference()
+  difference()
   {
     union()
     {

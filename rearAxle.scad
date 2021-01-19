@@ -62,7 +62,7 @@ rearAxle();
 // assembled rear axle
 module rearAxle(width = 140)
 {
-  translate([0,0,-12.5])
+  render() translate([0,0,-12.5])
   {
     // housing
     housingWidth = width - 2*wheelWidth;

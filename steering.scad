@@ -26,7 +26,7 @@ module steering()
   translate([0,-35,20]) rotate([180,0,0]) servo();
   
   // servo arm
-  !servoArm();
+  servoArm();
   
   // steering arm
   steeringArm();

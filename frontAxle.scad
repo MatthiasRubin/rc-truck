@@ -27,11 +27,12 @@ module frontAxle()
     axleBeamTop();
     axleBeamBottom();
     
+    // steering knuckles
+    translate([42.5,0,0]) steeringKnuckle();
+    translate([-42.5,0,0]) doubleSteeringKnuckle();
+    
     rotateCopy([0,180,0])
     {
-      // steering knuckles
-      translate([42.5,0,0]) steeringKnuckle();
-      
       // shafts
       translate([42,0,0]) shaft();
       
@@ -94,6 +95,13 @@ module axleBeamBottom()
     // holes for nuts
     mirrorCopy([1,0,0]) translate([20,0,-15]) cylinder(d = 8, h = 11, $fn = 6);
   }
+}
+
+
+// doubled steering knuckle
+module doubleSteeringKnuckle()
+{
+  rotate([0,0,180]) mirrorCopy([0,1,0]) steeringKnuckle();
 }
 
 

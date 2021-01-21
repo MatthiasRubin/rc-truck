@@ -2,19 +2,26 @@
 
 Servo myservo;
 
-int joystickX = 0;
-int joystickY = 1;
-int inputX;
-int inputY;
-int forewardPin = 2;
-int speedPin = 3;
-int reversePin = 4;
+enum
+{
+  joystickXPin = 0,
+  joystickYPin = 1,
+  forewardPin = 2,
+  speedPin = 3,
+  reversePin = 4
+};
 
-int sum = 0;
-int buffer[8];
-int index = 0;
+enum
+{
+  middleJoystickValueX = 507,
+  middleJoystickValueY = 514,
+  minSteeringAngle = 40,
+  middleSteeringAngle = 108,
+  maxSteeringAngle = 160
+};
 
-void setup() {
+void setup()
+{
   myservo.attach(9);
 
   pinMode(forewardPin, OUTPUT);
@@ -24,50 +31,64 @@ void setup() {
   digitalWrite(forewardPin,LOW);
   digitalWrite(speedPin,LOW);
   digitalWrite(reversePin,LOW);
-
-  Serial.begin(9600);
 }
 
-void loop() {
-  sum -= buffer[index];
-  buffer[index] = analogRead(joystickX);
-  sum += buffer[index];
-  index++;
-  index &= 7;
+void loop()
+{ 
+  drive();
+  steer();
 
-  inputY = analogRead(joystickY);
+  delay(15);
+}
 
-  inputX = (sum>>3);
-  Serial.print(inputX);
-  Serial.print(" ");
-  Serial.println(inputY);
-  
-  inputX -= 507; // -507 to 516
-  inputY -= 514; // -514 to 509
 
-  if (inputX >= 0)
+void drive()
+{
+  unsigned joystickValue = analogRead(joystickYPin);
+  unsigned speed = 0;
+
+  if (joystickValue >= middleJoystickValueY)
   {
-    inputX = map(inputX, 0, 516, 108, 155);
-  }
-  else
-  {
-    inputX = map(-inputX, 0, 507, 108, 40);
-  }
+    speed = map(joystickValue, middleJoystickValueY, 1023, 0, 255);
 
-  if (inputY >= 0)
-  {
-    inputY = map(inputY, 0, 509, 0, 255);
     digitalWrite(reversePin,LOW);
     digitalWrite(forewardPin,HIGH);
   }
   else
   {
-    inputY = map(-inputY, 0, 514, 0, 255);
-    digitalWrite(reversePin,HIGH);
+    speed = map(joystickValue, 0, middleJoystickValueY, 150, 0);
+    
     digitalWrite(forewardPin,LOW);
+    digitalWrite(reversePin,HIGH);
   }
 
-  analogWrite(speedPin,inputY);
-  myservo.write(inputX);
-  delay(15);
+  analogWrite(speedPin,speed);
+}
+
+
+void steer()
+{
+  static unsigned buffer[8] = {0};
+  static unsigned index = 0;
+  static unsigned sum = 0;
+  
+  sum -= buffer[index];
+  buffer[index] = analogRead(joystickXPin);
+  sum += buffer[index];
+  index++;
+  index &= 7;
+  
+  unsigned joystickValue = (sum>>3);
+  unsigned angle = 0;
+  
+  if (joystickValue >= middleJoystickValueX)
+  {
+    angle = map(joystickValue, middleJoystickValueX, 1023, middleSteeringAngle, maxSteeringAngle);
+  }
+  else
+  {
+    angle = map(joystickValue, 0, middleJoystickValueX, minSteeringAngle, middleSteeringAngle);
+  }
+  
+  myservo.write(angle);
 }

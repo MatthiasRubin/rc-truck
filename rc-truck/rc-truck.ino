@@ -2,12 +2,13 @@
 
 Servo myservo;
 
-int potpin = 0;
-int val;
-int val2;
-int back = 4;
-int fore = 2;
-int speed = 3;
+int joystickX = 0;
+int joystickY = 1;
+int inputX;
+int inputY;
+int forewardPin = 2;
+int speedPin = 3;
+int reversePin = 4;
 
 int sum = 0;
 int buffer[8];
@@ -16,55 +17,57 @@ int index = 0;
 void setup() {
   myservo.attach(9);
 
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
+  pinMode(forewardPin, OUTPUT);
+  pinMode(speedPin, OUTPUT);
+  pinMode(reversePin, OUTPUT);
 
-  digitalWrite(back,LOW);
-  digitalWrite(fore,LOW);
-  digitalWrite(speed,LOW);
+  digitalWrite(forewardPin,LOW);
+  digitalWrite(speedPin,LOW);
+  digitalWrite(reversePin,LOW);
 
   Serial.begin(9600);
 }
 
 void loop() {
   sum -= buffer[index];
-  buffer[index] = analogRead(potpin);
+  buffer[index] = analogRead(joystickX);
   sum += buffer[index];
   index++;
   index &= 7;
 
-  val2 = analogRead(1);
+  inputY = analogRead(joystickY);
 
-  val = (sum>>3);
+  inputX = (sum>>3);
+  Serial.print(inputX);
+  Serial.print(" ");
+  Serial.println(inputY);
   
-  val -= 510;
-  val2 -= 514;
+  inputX -= 507; // -507 to 516
+  inputY -= 514; // -514 to 509
 
-  if (val > 0)
+  if (inputX >= 0)
   {
-    val = map(val, 0, 514, 110, 150);
+    inputX = map(inputX, 0, 516, 108, 155);
   }
   else
   {
-    val = map(-val, 0, 510, 110, 40);
+    inputX = map(-inputX, 0, 507, 108, 40);
   }
 
-  if (val2 > 0)
+  if (inputY >= 0)
   {
-    val2 = map(val2, 0, 510, 0, 255);
-    digitalWrite(back,LOW);
-    digitalWrite(fore,HIGH);
+    inputY = map(inputY, 0, 509, 0, 255);
+    digitalWrite(reversePin,LOW);
+    digitalWrite(forewardPin,HIGH);
   }
   else
   {
-    val2 = map(-val2, 0, 514, 0, 255);
-    digitalWrite(back,HIGH);
-    digitalWrite(fore,LOW);
+    inputY = map(-inputY, 0, 514, 0, 255);
+    digitalWrite(reversePin,HIGH);
+    digitalWrite(forewardPin,LOW);
   }
 
-  analogWrite(speed,70);
-  Serial.println(val2);
-  myservo.write(150);
+  analogWrite(speedPin,inputY);
+  myservo.write(inputX);
   delay(15);
 }

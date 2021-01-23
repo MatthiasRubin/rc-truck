@@ -41,7 +41,7 @@ void loop()
   drive(driveData);
   steer(steerData);
 
-  delay(15);
+  delay(80);
 }
 
 uint8_t receiveData()
@@ -56,7 +56,7 @@ uint8_t receiveData()
   {
     level = digitalRead(dataPin);
     time = millis() - startTime;
-  } while ((!level) && (time < 150));
+  } while ((!level) && (time < 40));
 
   if (level)
   {
@@ -79,49 +79,86 @@ uint8_t receiveData()
 }
 
 
-void drive(int value)
+void drive(int newSpeed)
 {
-  unsigned speed;
-
-  if (value >= 0)
-  {
-    speed = map(value, 0, 127, 0, 255);
-
-    digitalWrite(reversePin,LOW);
-    digitalWrite(forewardPin,HIGH);
-
-    Serial.print(speed);
-  }
-  else
-  {
-    speed = map(value, -128, 0, 150, 0);
-    
-    digitalWrite(forewardPin,LOW);
-    digitalWrite(reversePin,HIGH);
-    
-    Serial.print(-((int)speed));
-  }
+  static int currentSpeed = 0;
+  int speedDifference = newSpeed - currentSpeed;
   
-  Serial.print(" ");
+  if (speedDifference > 20)
+  {
+    speedDifference = 20;
+  }
+  else if (speedDifference < -20)
+  {
+    speedDifference = -20;
+  }
 
-  analogWrite(speedPin,speed);
+  currentSpeed += speedDifference;
+
+  setSpeed(currentSpeed);
 }
 
 
-void steer(int value)
+void setSpeed(int speed)
 {
-  unsigned angle;
-  
-  if (value >= 0)
+  unsigned dutycycle;
+
+  if (speed >= 0)
   {
-    angle = map(value, 0, 127, middleSteeringAngle, maxSteeringAngle);
+    dutycycle = map(speed, 0, 127, 0, 255);
+
+    digitalWrite(reversePin,LOW);
+    digitalWrite(forewardPin,HIGH);
   }
   else
   {
-    angle = map(value, -128, 0, minSteeringAngle, middleSteeringAngle);
+    dutycycle = map(speed, -128, 0, 150, 0);
+    
+    digitalWrite(forewardPin,LOW);
+    digitalWrite(reversePin,HIGH);
+  }
+
+  Serial.print(speed);
+  Serial.print(" ");
+
+  analogWrite(speedPin,dutycycle);
+}
+
+
+void steer(int newAngle)
+{
+  static int currentAngle = 0;
+  int angleDifference = newAngle - currentAngle;
+  
+  if (angleDifference > 40)
+  {
+    angleDifference = 40;
+  }
+  else if (angleDifference < -40)
+  {
+    angleDifference = -40;
+  }
+
+  currentAngle += angleDifference;
+
+  setAngle(currentAngle);
+}
+
+
+void setAngle(int angle)
+{
+  unsigned servoPos;
+  
+  if (angle >= 0)
+  {
+    servoPos = map(angle, 0, 127, middleSteeringAngle, maxSteeringAngle);
+  }
+  else
+  {
+    servoPos = map(angle, -128, 0, minSteeringAngle, middleSteeringAngle);
   }
   
   Serial.println(angle);
   
-  myservo.write(angle);
+  myservo.write(servoPos);
 }

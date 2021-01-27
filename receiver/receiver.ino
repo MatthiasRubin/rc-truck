@@ -7,14 +7,16 @@ enum
   servoPin = 9,
   forewardPin = 2,
   speedPin = 3,
-  reversePin = 4
+  reversePin = 4,
+  voltagePin = 0
 };
 
 enum
 {
   minSteeringAngle = 40,
   middleSteeringAngle = 108,
-  maxSteeringAngle = 160
+  maxSteeringAngle = 160,
+  minVoltageLevel = 524
 };
 
 
@@ -40,16 +42,16 @@ void loop()
 {
   int8_t driveData;
   int8_t steerData;
-  
-  while(!radio.receive((uint8_t*)&driveData));
-  while(!radio.receive((uint8_t*)&steerData));
 
-  int voltage = analogRead(0);
+  int voltage = analogRead(voltagePin);
   
-  if (voltage <= 524)
+  if (voltage <= minVoltageLevel)
   {
     while(1);
   }
+  
+  while(!radio.receive((uint8_t*)&driveData));
+  while(!radio.receive((uint8_t*)&steerData));
   
   drive(driveData);
   steer(steerData);

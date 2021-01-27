@@ -1,3 +1,5 @@
+#include "RF433.h"
+
 enum
 {
   joystickXPin = 1,
@@ -11,13 +13,15 @@ enum
   middleJoystickYValue = 512
 };
 
+
+RF433::Transmitter radio(dataPin);
+
+
 void setup()
 {
-  pinMode(dataPin, OUTPUT);
-  digitalWrite(dataPin,LOW);
 
-  Serial.begin(9600);
 }
+
 
 void loop()
 { 
@@ -34,9 +38,7 @@ void loop()
     value = map(joystickYValue, 0, middleJoystickYValue, -128, 0);
   }
 
-  sendByte((uint8_t)value);
-  Serial.print(value);
-  Serial.print(" ");
+  radio.transmit((uint8_t)value);
 
   if (joystickXValue >= middleJoystickXValue)
   {
@@ -47,33 +49,7 @@ void loop()
     value = map(joystickXValue, 0, middleJoystickXValue, -128, 0);
   }
   
-  sendByte((uint8_t)value);
-  Serial.println(value);
+  radio.transmit((uint8_t)value);
 
   delay(100);
-}
-
-
-void sendByte(uint8_t data)
-{
-  uint8_t mask = 0x80;
-  
-  // start bit
-  sendBit(true);
-
-  while(mask != 0)
-  {
-    sendBit((data & mask) != 0);
-    
-    mask >>= 1;
-  }
-
-  // stop bit
-  sendBit(false);
-}
-
-void sendBit(bool data)
-{
-  digitalWrite(dataPin,data);
-  delayMicroseconds(100);
 }

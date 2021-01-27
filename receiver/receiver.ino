@@ -1,6 +1,5 @@
 #include <Servo.h>
-
-Servo myservo;
+#include "RF433.h"
 
 enum
 {
@@ -18,6 +17,11 @@ enum
   maxSteeringAngle = 160
 };
 
+
+Servo myservo;
+RF433::Receiver radio(dataPin);
+
+
 void setup()
 {
   myservo.attach(servoPin);
@@ -29,53 +33,28 @@ void setup()
   digitalWrite(forewardPin,LOW);
   digitalWrite(speedPin,LOW);
   digitalWrite(reversePin,LOW);
-
-  Serial.begin(9600);
 }
+
 
 void loop()
 {
-  int8_t driveData = (int8_t)receiveData();
-  int8_t steerData = (int8_t)receiveData();
+  int8_t driveData;
+  int8_t steerData;
+  
+  while(!radio.receive((uint8_t*)&driveData));
+  while(!radio.receive((uint8_t*)&steerData));
+
+  int voltage = analogRead(0);
+  
+  if (voltage <= 524)
+  {
+    while(1);
+  }
   
   drive(driveData);
   steer(steerData);
 
   delay(80);
-}
-
-uint8_t receiveData()
-{
-  unsigned long startTime = millis();
-  bool level = LOW;
-  unsigned long time = 0;
-  uint8_t data = 0;
-
-  // waiting for start bit
-  do
-  {
-    level = digitalRead(dataPin);
-    time = millis() - startTime;
-  } while ((!level) && (time < 40));
-
-  if (level)
-  {
-    delayMicroseconds(150);
-    
-    // receive data
-    for (int i = 0; i < 8; ++i)
-    {
-      data <<= 1;
-      
-      if (digitalRead(dataPin))
-      {
-        data |= 1;
-      }
-
-      delayMicroseconds(100);
-    }
-  }
-  return data;
 }
 
 
@@ -118,9 +97,6 @@ void setSpeed(int speed)
     digitalWrite(reversePin,HIGH);
   }
 
-  Serial.print(speed);
-  Serial.print(" ");
-
   analogWrite(speedPin,dutycycle);
 }
 
@@ -157,8 +133,6 @@ void setAngle(int angle)
   {
     servoPos = map(angle, -128, 0, minSteeringAngle, middleSteeringAngle);
   }
-  
-  Serial.println(angle);
   
   myservo.write(servoPos);
 }

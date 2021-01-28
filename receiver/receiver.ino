@@ -47,6 +47,8 @@ void loop()
   
   if (voltage <= minVoltageLevel)
   {
+    // stop forever
+    setSpeed(0);
     while(1);
   }
   

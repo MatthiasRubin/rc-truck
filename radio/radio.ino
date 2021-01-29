@@ -1,4 +1,5 @@
-#include "radioTest.h"
+#include "testTransmitter.h"
+#include "testReceiver.h"
 
 //TestTransmitter test;
 TestReceiver test;

@@ -40,8 +40,7 @@ void setup()
 
 void loop()
 {
-  int8_t driveData;
-  int8_t steerData;
+  int8_t driveData[2];
 
   int voltage = analogRead(voltagePin);
   
@@ -52,11 +51,10 @@ void loop()
     while(1);
   }
   
-  while(!radio.receive((uint8_t*)&driveData));
-  while(!radio.receive((uint8_t*)&steerData));
+  while(!radio.receive((uint8_t*)driveData,2));
   
-  drive(driveData);
-  steer(steerData);
+  drive(driveData[0]);
+  steer(driveData[1]);
 
   delay(80);
 }

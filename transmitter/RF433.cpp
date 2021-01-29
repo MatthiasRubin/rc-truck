@@ -18,7 +18,7 @@ bool Receiver::receive(uint8_t* data, int numberOfBytes)
   if (checkStartBit())
   {
     // start bit detected
-
+    
     // receive bytes
     while (numberOfBytes > 0)
     {
@@ -29,6 +29,9 @@ bool Receiver::receive(uint8_t* data, int numberOfBytes)
       --numberOfBytes;
       ++data;
     }
+    
+    // wait for half stop bit
+    delayMicroseconds(BitDuration/2);
 
     dataReceived = true;
   }
@@ -45,17 +48,19 @@ bool Receiver::checkStartBit()
   {
     // rising edge detected
     bool level = HIGH;
-    unsigned long highLevelTime = 0;
-    unsigned long riseTime = micros();
 
-    // get high level time
-    while (level && (highLevelTime <= (BitDuration - TransitionTime)))
+    // start time measurement
+    unsigned long highLevelTime = 0;
+    readTime = micros();
+
+    // measure high level time
+    while (level && (highLevelTime <= (2*BitDuration - 2*TransitionTime)))
     {
       // check level
       level = digitalRead(dataPin);
 
-      // get time
-      highLevelTime = micros() - riseTime;
+      // get high level time
+      highLevelTime = micros() - readTime;
     }
 
     // check high level time
@@ -63,6 +68,9 @@ bool Receiver::checkStartBit()
     {
       // valid start bit detected
       startDetected = true;
+
+      // calculate next read time
+      readTime += (2*BitDuration + BitDuration/2 - TransitionTime);
     }
   }
 
@@ -93,14 +101,14 @@ uint8_t Receiver::receiveByte()
 
 bool Receiver::receiveBit()
 {
-  // wait for bit center
-  delayMicroseconds(BitDuration/2);
+  // wait for read time
+  while(micros() < readTime);
 
   // get level
   bool receivedBit = digitalRead(dataPin);
 
-  // wait for bit end
-  delayMicroseconds(BitDuration/2);
+  // next read time
+  readTime += BitDuration;
 
   return receivedBit;
 }
@@ -116,7 +124,11 @@ Transmitter::Transmitter(int dataPin) : dataPin(dataPin)
 
 bool Transmitter::transmit(uint8_t* data, int numberOfBytes)
 {
-  // start bit
+  // start time measurement
+  writeTime = micros();
+  
+  // start bits
+  sendBit(true);
   sendBit(true);
   
   // send bytes
@@ -137,14 +149,8 @@ bool Transmitter::transmit(uint8_t* data, int numberOfBytes)
 
 bool Transmitter::transmit(uint8_t data)
 {
-  // start bit
-  sendBit(true);
-
-  // send byte
-  sendByte(data);
-
-  // stop bit
-  sendBit(false);
+  // transmit 1 byte
+  transmit(&data);
 }
 
 
@@ -167,9 +173,12 @@ void Transmitter::sendByte(uint8_t data)
 
 void Transmitter::sendBit(bool data)
 {
+  // wait for write time
+  while(micros() < writeTime);
+  
   // set level
   digitalWrite(dataPin,data);
 
-  // wait for bit end
-  delayMicroseconds(BitDuration);
+  // next write time
+  writeTime += BitDuration;
 }

@@ -16,6 +16,7 @@ namespace RF433
       bool receiveBit();
       uint8_t receiveByte();
       int dataPin;
+      unsigned long readTime;
   };
 
   class Transmitter
@@ -29,6 +30,7 @@ namespace RF433
       void sendByte(uint8_t data);
       void sendBit(bool data);
       int dataPin;
+      unsigned long writeTime;
   };
 }
 

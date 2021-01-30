@@ -6,6 +6,7 @@ enum
 {
   dataPin = 12,
   address = 25,
+  nof_channels = 2,
   servoPin = 9,
   forewardPin = 2,
   speedPin = 3,
@@ -38,53 +39,94 @@ void setup()
   digitalWrite(forewardPin,LOW);
   digitalWrite(speedPin,LOW);
   digitalWrite(reversePin,LOW);
-
-  Serial.begin(9600);
 }
 
 
 void loop()
 {
-  static int8_t driveData[2] = {0};
+  static int8_t driveData[nof_channels] = {0};
 
-  int voltage = analogRead(voltagePin);
-  
-  if (voltage <= minVoltageLevel)
-  {
-    // stop forever
-    setSpeed(0);
-    while(1);
-  }
+  // check battery voltage
+  readVoltage();
 
-  for (int i = 0; i < 2; ++i)
-  {
-    while(!radio.receive(i,(uint8_t*)&driveData[i]));
-  }
-  
+  // receive remote data
+  receiveData(driveData);
+
+  // drive and steer
   drive(driveData[0]);
   steer(driveData[1]);
+}
 
-  delay(80);
+
+void readVoltage()
+{
+  static unsigned long readTime = 0;
+
+  if ((millis() - readTime) > 1000)
+  {
+    // read battery voltage
+    int voltage = analogRead(voltagePin);
+    
+    if (voltage <= minVoltageLevel)
+    {
+      // stop forever
+      setSpeed(0);
+      while(1);
+    }
+
+    readTime = millis();
+  }
+}
+
+
+void receiveData(int8_t* data)
+{
+  static unsigned long receiveTime[nof_channels] = {0};
+  
+  for (int i = 0; i < nof_channels; ++i)
+  {
+    if (radio.receive(i,(uint8_t*)data))
+    {
+      // new data received
+      receiveTime[i] = millis();
+    }
+
+    if ((millis() - receiveTime[i]) > 300)
+    {
+      // reset on receive timeout
+      *data = 0;
+    }
+
+    // next channel
+    ++data;
+  }
 }
 
 
 void drive(int newSpeed)
 {
+  static unsigned long setTime = 0;
   static int currentSpeed = 0;
-  int speedDifference = newSpeed - currentSpeed;
+
+  if ((millis() - setTime) > 10)
+  {
+    setTime = millis();
+    
+    int speedDifference = newSpeed - currentSpeed;
+    
+    if (speedDifference > 2)
+    {
+      speedDifference = 2;
+    }
+    else if (speedDifference < -2)
+    {
+      speedDifference = -2;
+    }
   
-  if (speedDifference > 20)
-  {
-    speedDifference = 20;
+    currentSpeed += speedDifference;
+  
+    setSpeed(currentSpeed);
   }
-  else if (speedDifference < -20)
-  {
-    speedDifference = -20;
-  }
-
-  currentSpeed += speedDifference;
-
-  setSpeed(currentSpeed);
 }
 
 
@@ -113,21 +155,28 @@ void setSpeed(int speed)
 
 void steer(int newAngle)
 {
+  static unsigned long setTime = 0;
   static int currentAngle = 0;
-  int angleDifference = newAngle - currentAngle;
+
+  if ((millis() - setTime) > 10)
+  {
+    setTime = millis();
+    
+    int angleDifference = newAngle - currentAngle;
+    
+    if (angleDifference > 4)
+    {
+      angleDifference = 4;
+    }
+    else if (angleDifference < -4)
+    {
+      angleDifference = -4;
+    }
   
-  if (angleDifference > 40)
-  {
-    angleDifference = 40;
+    currentAngle += angleDifference;
+  
+    setAngle(currentAngle);
   }
-  else if (angleDifference < -40)
-  {
-    angleDifference = -40;
-  }
-
-  currentAngle += angleDifference;
-
-  setAngle(currentAngle);
 }
 
 

@@ -1,22 +1,31 @@
 #include <Servo.h>
-
-Servo myservo;
+#include "src/communication/RF433.h"
+#include "src/communication/radio.h"
 
 enum
 {
   dataPin = 12,
+  address = 25,
   servoPin = 9,
   forewardPin = 2,
   speedPin = 3,
-  reversePin = 4
+  reversePin = 4,
+  voltagePin = 0
 };
 
 enum
 {
   minSteeringAngle = 40,
   middleSteeringAngle = 108,
-  maxSteeringAngle = 160
+  maxSteeringAngle = 160,
+  minVoltageLevel = 524
 };
+
+
+Servo myservo;
+RF433::Receiver radioDevice(dataPin);
+RADIO::Receiver radio(radioDevice,address);
+
 
 void setup()
 {
@@ -33,49 +42,29 @@ void setup()
   Serial.begin(9600);
 }
 
+
 void loop()
 {
-  int8_t driveData = (int8_t)receiveData();
-  int8_t steerData = (int8_t)receiveData();
+  static int8_t driveData[2] = {0};
+
+  int voltage = analogRead(voltagePin);
   
-  drive(driveData);
-  steer(steerData);
+  if (voltage <= minVoltageLevel)
+  {
+    // stop forever
+    setSpeed(0);
+    while(1);
+  }
+
+  for (int i = 0; i < 2; ++i)
+  {
+    while(!radio.receive(i,(uint8_t*)&driveData[i]));
+  }
+  
+  drive(driveData[0]);
+  steer(driveData[1]);
 
   delay(80);
-}
-
-uint8_t receiveData()
-{
-  unsigned long startTime = millis();
-  bool level = LOW;
-  unsigned long time = 0;
-  uint8_t data = 0;
-
-  // waiting for start bit
-  do
-  {
-    level = digitalRead(dataPin);
-    time = millis() - startTime;
-  } while ((!level) && (time < 40));
-
-  if (level)
-  {
-    delayMicroseconds(150);
-    
-    // receive data
-    for (int i = 0; i < 8; ++i)
-    {
-      data <<= 1;
-      
-      if (digitalRead(dataPin))
-      {
-        data |= 1;
-      }
-
-      delayMicroseconds(100);
-    }
-  }
-  return data;
 }
 
 
@@ -118,9 +107,6 @@ void setSpeed(int speed)
     digitalWrite(reversePin,HIGH);
   }
 
-  Serial.print(speed);
-  Serial.print(" ");
-
   analogWrite(speedPin,dutycycle);
 }
 
@@ -157,8 +143,6 @@ void setAngle(int angle)
   {
     servoPos = map(angle, -128, 0, minSteeringAngle, middleSteeringAngle);
   }
-  
-  Serial.println(angle);
   
   myservo.write(servoPos);
 }

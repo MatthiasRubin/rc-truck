@@ -2,7 +2,8 @@
 #define _TESTTRANSMITTER_H_
 
 #include <stdint.h>
-#include "RF433.h"
+#include "src/communication/radio.h"
+#include "src/communication/RF433.h"
 
 class TestTransmitter
 {
@@ -11,7 +12,10 @@ class TestTransmitter
     void run();
     
   private:
-    RF433::Transmitter radio;
+    RF433::Transmitter radioDevice;
+    RADIO::Transmitter radio;
+    RADIO::Transmitter radio2;
+    RADIO::Transmitter radio3;
     unsigned number;
     uint8_t data[2];
     

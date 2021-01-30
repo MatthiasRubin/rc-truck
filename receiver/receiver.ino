@@ -1,9 +1,11 @@
 #include <Servo.h>
-#include "RF433.h"
+#include "src/communication/RF433.h"
+#include "src/communication/radio.h"
 
 enum
 {
   dataPin = 12,
+  address = 25,
   servoPin = 9,
   forewardPin = 2,
   speedPin = 3,
@@ -21,7 +23,8 @@ enum
 
 
 Servo myservo;
-RF433::Receiver radio(dataPin);
+RF433::Receiver radioDevice(dataPin);
+RADIO::Receiver radio(radioDevice,address);
 
 
 void setup()
@@ -35,12 +38,14 @@ void setup()
   digitalWrite(forewardPin,LOW);
   digitalWrite(speedPin,LOW);
   digitalWrite(reversePin,LOW);
+
+  Serial.begin(9600);
 }
 
 
 void loop()
 {
-  int8_t driveData[2];
+  static int8_t driveData[2] = {0};
 
   int voltage = analogRead(voltagePin);
   
@@ -50,8 +55,11 @@ void loop()
     setSpeed(0);
     while(1);
   }
-  
-  while(!radio.receive((uint8_t*)driveData,2));
+
+  for (int i = 0; i < 2; ++i)
+  {
+    while(!radio.receive(i,(uint8_t*)&driveData[i]));
+  }
   
   drive(driveData[0]);
   steer(driveData[1]);

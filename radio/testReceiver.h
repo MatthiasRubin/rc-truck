@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 #include <Servo.h>
-#include "RF433.h"
+#include "src/communication/radio.h"
+#include "src/communication/RF433.h"
 
 class TestReceiver
 {
@@ -12,9 +13,9 @@ class TestReceiver
     void run();
     
   private:
-    RF433::Receiver radio;
+    RF433::Receiver radioDevice;
+    RADIO::Receiver radio;
     Servo servo;
-    uint8_t data[2];
 };
 
 #endif

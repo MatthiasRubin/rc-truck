@@ -1,10 +1,13 @@
-#include "RF433.h"
+#include "src/communication/RF433.h"
+#include "src/communication/radio.h"
+
 
 enum
 {
   joystickXPin = 1,
   joystickYPin = 0,
-  dataPin = 6
+  dataPin = 6,
+  address = 25
 };
 
 enum
@@ -14,7 +17,8 @@ enum
 };
 
 
-RF433::Transmitter radio(dataPin);
+RF433::Transmitter radioDevice(dataPin);
+RADIO::Transmitter radio(radioDevice,address);
 
 
 void setup()
@@ -46,8 +50,11 @@ void loop()
   {
     value[1] = map(joystickXValue, 0, middleJoystickXValue, -128, 0);
   }
-  
-  radio.transmit((uint8_t*)value,2);
+
+  for (int i = 0; i < 2; ++i)
+  {
+    radio.transmit(i,(uint8_t)value[i]);
+  }
 
   delay(100);
 }

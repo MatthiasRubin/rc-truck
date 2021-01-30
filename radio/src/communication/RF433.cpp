@@ -15,7 +15,7 @@ bool Receiver::receive(uint8_t* data, int numberOfBytes)
 {
   bool dataReceived = false;
   
-  if (checkStartBit())
+  if (checkStartBits())
   {
     // start bit detected
     
@@ -40,7 +40,7 @@ bool Receiver::receive(uint8_t* data, int numberOfBytes)
 }
 
 
-bool Receiver::checkStartBit()
+bool Receiver::checkStartBits()
 {
   bool startDetected = false;
   
@@ -122,7 +122,7 @@ Transmitter::Transmitter(int dataPin) : dataPin(dataPin)
 }
 
 
-bool Transmitter::transmit(uint8_t* data, int numberOfBytes)
+void Transmitter::transmit(const uint8_t* data, int numberOfBytes)
 {
   // start time measurement
   writeTime = micros();
@@ -142,12 +142,13 @@ bool Transmitter::transmit(uint8_t* data, int numberOfBytes)
     ++data;
   }
 
-  // stop bit
+  // stop bits
+  sendBit(false);
   sendBit(false);
 }
 
 
-bool Transmitter::transmit(uint8_t data)
+void Transmitter::transmit(uint8_t data)
 {
   // transmit 1 byte
   transmit(&data);

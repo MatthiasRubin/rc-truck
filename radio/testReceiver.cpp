@@ -5,21 +5,19 @@
 enum
 {
   receiverPin = 12,
+  radioAddress = 2,
   servoPin = 9,
   forewardPin = 2,
   speedPin = 3,
   reversePin = 4
 };
 
-TestReceiver::TestReceiver() : radio(receiverPin)
+TestReceiver::TestReceiver() : radioDevice(receiverPin), radio(radioDevice,radioAddress)
 {
-  for (int i = 0; i < (sizeof(data)/sizeof(data[0])); ++i)
-  {
-    data[i] = 0;
-  }
-  
+  // initialize servo
   servo.attach(servoPin);
 
+  // configure motor
   pinMode(forewardPin, OUTPUT);
   pinMode(speedPin, OUTPUT);
   pinMode(reversePin, OUTPUT);
@@ -31,16 +29,10 @@ TestReceiver::TestReceiver() : radio(receiverPin)
 
 void TestReceiver::run()
 {
-  uint8_t newData[2];
+  uint8_t data;
   
-  if (radio.receive(newData, 2))
+  if (radio.receive(0, &data))
   {
-    if (newData[0] != data[0] || newData[1] != data[1])
-    {
-      Serial.println((data[0]<<8) + (data[1]));
-      
-      data[0] = newData[0];
-      data[1] = newData[1];
-    }
+    Serial.println(data);
   }
 }

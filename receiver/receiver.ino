@@ -4,14 +4,14 @@
 
 enum
 {
-  dataPin = 12,
   address = 25,
   nof_channels = 2,
+  dataPin = 2,
+  speedPin = 6,
+  forewardPin = 7,
+  reversePin = 8,
   servoPin = 9,
-  forewardPin = 2,
-  speedPin = 3,
-  reversePin = 4,
-  voltagePin = 0
+  voltagePin = 3
 };
 
 enum

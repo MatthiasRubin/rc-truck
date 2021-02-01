@@ -7,7 +7,7 @@ use <gears.scad>
 
 
 // used parts
-use <rearWheel.scad>
+use <wheel.scad>
 
 
 // global definitions
@@ -89,7 +89,7 @@ module rearAxle(width = 140)
     rotateCopy([0,180,0]) translate([wheelBearingOffset,0,0]) outputBearing();
    
     // wheels
-    rotateCopy([0,180,0]) translate([shaftLength,0,0]) rearWheel();
+    rotateCopy([0,180,0]) translate([shaftLength,0,0]) wheel();
   }
 }
 

@@ -6,7 +6,7 @@ use <copy.scad>
 
 
 // used parts
-use <frontWheel.scad>
+use <wheel.scad>
 
 
 // global definitions
@@ -37,7 +37,7 @@ module frontAxle()
       translate([42,0,0]) shaft();
       
       // wheels
-      translate([50,0,0]) frontWheel();
+      translate([-70,0,0]) wheel();
     }
     
     // steering rod

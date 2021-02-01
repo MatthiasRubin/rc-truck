@@ -3,6 +3,9 @@
 
 // used parts
 use <frame.scad>
+use <motor.scad>
+use <steering.scad>
+use <driveShaft.scad>
 use <rearAxle.scad>
 use <frontAxle.scad>
 
@@ -14,10 +17,19 @@ chassis();
 // assembled truck chassis
 module chassis()
 {
-  // add frame
+  // frame
   frame();
   
-  // add axles
+  // motor
+  translate([0,-38,25]) motor();
+  
+  // steering
+  translate([0,-125,0]) steering();
+  
+  // drive shaft
+  translate([0,43.9,-4.05]) driveShaft();
+  
+  // axles
   translate([0,125,0]) rearAxle();
   translate([0,-125,0]) frontAxle();
 }

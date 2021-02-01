@@ -1,17 +1,20 @@
 // this file defines the truck frame
-$fa = 5;
-$fs = 0.5;
 
 
 // used modules
 use <copy.scad>
 
 
+// global definitions
+$fa = 5;
+$fs = 0.5;
+
+
 // shows truck frame
 frame();
 
 
-// truck frame
+// assembled truck frame
 module frame()
 {
   // put two halfs together
@@ -41,12 +44,18 @@ module frameHalf()
     
     mirrorCopy([1,0,0])
     {
-      // add holes to mount axles
+      // holes to mount axles
       translate([20,125,-5]) cylinder(d = 4.1, h = 30);
     
-      // add holes to put halfs together
+      // holes to put halfs together
       translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
     }
+    
+    // holes to mount servo
+    translateCopy([0,36,0]) translate([0,142,25]) cylinder(d = 4.1, h = 11, center = true);
+    
+    // holes to mount motor
+    translateCopy([0,36,0]) translate([0,20,25]) rotate([0,90,0]) 
+      cylinder(d = 3.2, h = 51, center = true);
   } 
 }
-

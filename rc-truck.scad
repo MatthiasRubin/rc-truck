@@ -12,13 +12,13 @@ truck();
 // fully assembled truck
 module truck()
 {
-  // add chassis
+  // chassis
   chassis();
   
-  // add cabin in front
+  // cabin in front
   translate([0,-200,25]) cabin();
   
-  // add cargo box in the back
+  // cargo box in the back
   translate([0,80,100]) cargoBox();
 }
 

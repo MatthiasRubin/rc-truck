@@ -22,6 +22,7 @@ profileDepth = 1;
 profileWidth = 3;
 profileRadius = wheelDiameter/3;
 profileAngle = 30;
+numberOfProfiles = 36;
 
 // rim
 rimDiameter = 32;
@@ -37,13 +38,14 @@ rimHoleDiameter = 13;
 
 
 // shows wheel
-wheel();
+//rotateCopy([0,180,0]) 
+  wheel();
 
 
 // wheel
 module wheel()
 {
-  render() translate([wheelWidth/2+wheelMountOffset,0,0]) rotate([0,-90,0])
+  translate([wheelWidth/2+wheelMountOffset,0,0]) rotate([0,-90,0])
   {
     // rim
     rim();
@@ -62,19 +64,23 @@ module tire()
     union()
     {
       // basic wheel
-      cylinder(d = wheelDiameter-2*profileDepth, h = wheelWidth/2, center = true);
+      basicWheelDiameter = wheelDiameter-2*profileDepth;
+      
+      cylinder(d = basicWheelDiameter, h = wheelWidth/2, center = true);
       
       // shape wheel
       mirrorCopy([0,0,1]) translate([0,0,wheelWidth/4])
-        cylinder(d1 = wheelDiameter-2*profileDepth, d2 = wheelDiameter-3*profileDepth, h = wheelWidth/4);
+        cylinder(d1 = basicWheelDiameter, d2 = wheelDiameter-3*profileDepth, h = wheelWidth/4);
       
-      rotateCopy([0,0,10],35) rotateCopy([180,0,0]) 
+      // profile
+      rotateCopy([0,0,360/numberOfProfiles],numberOfProfiles-1) rotateCopy([180,0,0]) 
         translate([wheelDiameter/2-profileDepth,0,0]) rotate([0,90,0]) profile();
     }
 
     // hole for rim
     cylinder(d = rimDiameter+0.2, h = wheelWidth+1, center = true);
     
+    // egde for rim
     mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2-0.1])
       cylinder(d1 = outerRimDiameter+0.2, d2 = innerRimDiameter+0.2, h = 2*rimThickness);
   }
@@ -83,27 +89,39 @@ module tire()
 // profile shape
 module profile()
 {
-  difference()
+  render() difference()
   {
     outerProfileDiameter = 2*profileRadius + profileWidth;
-    innerProfileDiameter = 2*profileRadius - profileWidth;
     profileOffset = profileRadius * [sin(-profileAngle)+0.007,cos(-profileAngle),0];
     
     translate(profileOffset) difference()
     {
+      // basic profile
       cylinder(d1 = outerProfileDiameter+profileDepth, 
         d2 = outerProfileDiameter, h = 2*profileDepth, center = true);
+      
+      // shape basic profile
+      innerProfileDiameter = 2*profileRadius - profileWidth;
       cylinder(d1 = innerProfileDiameter-profileDepth, 
         d2 = innerProfileDiameter, h = 2*profileDepth+1, center = true);
-      translate([-50,0,0]) cube([100,200,100], center = true);
-      translate([0,50,0]) cube([100,100,100], center = true);
+      
+      // remove unused parts
+      translate([sign(profileOffset[0])*outerProfileDiameter,0,0]) 
+        cube(2*outerProfileDiameter, center = true);
+      translate([0,sign(profileOffset[1])*outerProfileDiameter,0]) 
+        cube(2*outerProfileDiameter, center = true);
     }
     
-    rotate([0,0,profileAngle]) translateCopy([-5,0,0]) cube([1.5,10,10], center = true);
+    // interrupt profile
+    profileGap = profileWidth/2;
+    profileSize = profileWidth + 2*profileDepth;
+    rotate([0,0,profileAngle]) translateCopy([-profileSize,0,0]) 
+      cube([profileGap,2*profileSize,2*profileSize], center = true);
     
-    translate([50,0,0]) cube([100,200,100], center = true);
-    translate([-50-wheelWidth/2,0,0]) cube([100,200,100], center = true);
-    
+    // remove unused parts
+    profileCutOffOffset = (outerProfileDiameter+wheelWidth)/2;
+    translate([-profileCutOffOffset,0,0]) cube(outerProfileDiameter, center = true);
+    translate([outerProfileDiameter/2,0,0]) cube(outerProfileDiameter, center = true);
   }
 }
 
@@ -113,37 +131,41 @@ module rim()
 {
   difference()
   {
-    
     union()
     {
       // basic rim
       cylinder(d = rimDiameter,h = wheelWidth, center = true);
       
-      
+      // rim edge
       mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2])
         cylinder(d1 = outerRimDiameter, d2 = innerRimDiameter, h = 2*rimThickness);
     }
 
-    // shape rim
+    // hollow rim
     cylinder(d = innerRimDiameter, h = wheelWidth+1, center = true);
       
+    // smooth edge
     mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2-rimThickness])
       cylinder(d1 = outerRimDiameter, d2 = innerRimDiameter, h = 2*rimThickness);
   }
   
-  
-  wheelHubDiameter = 2*pitchCircleDiameter - rimHoleDiameter;
+  // wheel mount
   wheelMountHeight = pitchCircleDiameter - rimHoleDiameter;
   wheelMountOffset = wheelMountHeight - wheelMountOffset;
-  
   translate([0,0,wheelWidth/2 - wheelMountOffset]) difference()
   {
+    // basic wheel mount
     wheelHubDiameter = 2*pitchCircleDiameter - rimHoleDiameter;
     cylinder(d1 = rimDiameter, d2 = wheelHubDiameter,h = wheelMountHeight);
+    
+    // shape wheel mount
     translate([0,0,-rimThickness]) 
       cylinder(d1 = rimDiameter, d2 = wheelHubDiameter-rimThickness,h = wheelMountHeight);
+    
+    // rim hole 
     cylinder(d = rimHoleDiameter,h = wheelMountHeight+1);
     
+    // screw holes
     rotateCopy([0,0,360/numberOfScrewHoles], numberOfScrewHoles-1)
       translate([pitchCircleDiameter/2,0,0]) rotate([0,0,30])
         cylinder(d = screwHoleDiameter, h = wheelMountHeight+1, $fn = 6);

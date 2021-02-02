@@ -26,6 +26,39 @@ module rotateCopy(v = [0,0,0], n = 1, center = false)
 }
 
 
+// this function copies his children and rotates the copies around the x-axis
+
+// x: around the x-axis
+// n: number of copies
+// center: rotate on both sides equally
+module rotateCopyX(x = 0, n = 1, center = false)
+{
+  rotateCopy([x,0,0], n, center) children();
+}
+
+
+// this function copies his children and rotates the copies around the y-axis
+
+// y: around the y-axis
+// n: number of copies
+// center: rotate on both sides equally
+module rotateCopyY(y = 0, n = 1, center = false)
+{
+  rotateCopy([0,y,0], n, center) children();
+}
+
+
+// this function copies his children and rotates the copies around the z-axis
+
+// z: around the z-axis
+// n: number of copies
+// center: rotate on both sides equally
+module rotateCopyZ(z = 0, n = 1, center = false)
+{
+  rotateCopy([0,0,z], n, center) children();
+}
+
+
 // this function copies his children and translates the copies
 
 // v: translation vector
@@ -51,6 +84,39 @@ module translateCopy(v = [0,0,0], n = 1, center = false)
 }
 
 
+// this function copies his children and translates the copies in x-direction
+
+// x: translation in x-direction
+// n: number of copies
+// center: translate on both sides equally
+module translateCopyX(x = 0, n = 1, center = false)
+{
+  translateCopy([x,0,0], n, center) children();
+}
+
+
+// this function copies his children and translates the copies in y-direction
+
+// y: translation in y-direction
+// n: number of copies
+// center: translate on both sides equally
+module translateCopyY(y = 0, n = 1, center = false)
+{
+  translateCopy([0,y,0], n, center) children();
+}
+
+
+// this function copies his children and translates the copies in z-direction
+
+// z: translation in z-direction
+// n: number of copies
+// center: translate on both sides equally
+module translateCopyZ(z = 0, n = 1, center = false)
+{
+  translateCopy([0,0,z], n, center) children();
+}
+
+
 // this function copies his children and mirrors the copy
 
 // v: mirror vector
@@ -58,6 +124,27 @@ module mirrorCopy(v = [1,0,0])
 {
   children();
   mirror(v) children();
+}
+
+
+// this function copies his children and mirrors the copy in x-direction
+module mirrorCopyX()
+{
+  mirrorCopy([1,0,0]) children();
+}
+
+
+// this function copies his children and mirrors the copy in y-direction
+module mirrorCopyY()
+{
+  mirrorCopy([0,1,0]) children();
+}
+
+
+// this function copies his children and mirrors the copy in z-direction
+module mirrorCopyZ()
+{
+  mirrorCopy([0,0,1]) children();
 }
 
 

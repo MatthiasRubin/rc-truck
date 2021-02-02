@@ -4,6 +4,7 @@
 // used modules
 use <Getriebe.scad>
 use <copy.scad>
+use <transform.scad>
 
 
 // global defintions
@@ -22,12 +23,12 @@ pi = 3.14159;
 
 // shows two spur gears
 gear(12, hole = 4, holeFaces = 4);
-translate([-getSpurGearDistance(12,20),0,0]) rotate([0,0,180/20])
+translateX(-getSpurGearDistance(12,20)) rotateZ(180/20)
   gear(20, hole = 4, holeFaces = 4);
 
 
 // shows two bevel gears
-translate([0,20,0])
+translateY(20)
 {
   // calculate cone angles and offsets
   angle1 = getConeAngle(30,15);
@@ -37,7 +38,7 @@ translate([0,20,0])
 
   // show gears
   gear(30,0.7, h = offset1/2, coneAngle = angle1, hole = 4);
-  translate([-offset2,0,offset1]) rotate([0,90,0])
+  translate([-offset2,0,offset1]) rotateY(90)
     gear(15,0.7, h = offset2/2, coneAngle = angle2, hole = 4);
 }
 
@@ -57,7 +58,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
     union()
     {
       // basic gear
-      translate([0,0,phase]) difference()
+      translateZ(phase) difference()
       {
         if (coneAngle == 0)
         {
@@ -71,7 +72,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
         }
         
         // remove protruding teeth at the top
-        translate([0,0,h - 2*phase]) cylinder(d = 2*n*m, h = 10*m);
+        translateZ(h - 2*phase) cylinder(d = 2*n*m, h = 10*m);
       }
       
       // phase
@@ -88,23 +89,23 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
         
         // top bevel gear phase
         topDiameter = bottomDiameter - 1.6*h*tan(coneAngle);
-        translate([0,0,h - phase]) cylinder(d = topDiameter, h = phase);
+        translateZ(h - phase) cylinder(d = topDiameter, h = phase);
       }
     }
     
     if (hole != 0)
     {
-      translate([0,0,-0.5])
+      translateZ(-0.5)
       {
         // hole
-        rotate([0,0,180/holeFaces - 90]) cylinder(d = hole, h = h+1, $fn = holeFaces);
+        rotateZ(180/holeFaces - 90) cylinder(d = hole, h = h+1, $fn = holeFaces);
         
         // bottom hole phase
         cylinder(d = hole + 2*phase, h = phase + 0.5);
       }
       
       // top hole phase
-      translate([0,0,h - phase]) cylinder(d = hole + 2*phase, h = phase + 0.5);
+      translateZ(h - phase) cylinder(d = hole + 2*phase, h = phase + 0.5);
     }
   }
 }

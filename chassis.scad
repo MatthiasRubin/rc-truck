@@ -1,6 +1,10 @@
 // this file defines the assembled truck chassis
 
 
+// used modules
+use <transform.scad>
+
+
 // used parts
 use <frame.scad>
 use <motor.scad>
@@ -24,12 +28,12 @@ module chassis()
   translate([0,-38,25]) motor();
   
   // steering
-  translate([0,-125,0]) steering();
+  translateY(-125) steering();
   
   // drive shaft
   translate([0,43.9,-4.05]) driveShaft();
   
   // axles
-  translate([0,125,0]) rearAxle();
-  translate([0,-125,0]) frontAxle();
+  translateY(125) rearAxle();
+  translateY(-125) frontAxle();
 }

@@ -3,6 +3,7 @@
 
 // used modules
 use <copy.scad>
+use <transform.scad>
 
 
 // global definitions
@@ -18,7 +19,7 @@ frame();
 module frame()
 {
   // put two halfs together
-  rotateCopy([0,0,180]) frameHalf();
+  rotateCopyZ(180) frameHalf();
 }
 
 
@@ -42,20 +43,23 @@ module frameHalf()
     translate([0,57.5,25]) cube([30,95,15], center = true);
     translate([0,160,25]) cube([30,30,15], center = true);
     
-    mirrorCopy([1,0,0])
+    mirrorCopyX()
     {
       // holes to mount axles
       translate([20,125,-5]) cylinder(d = 4.1, h = 30);
     
       // holes to put halfs together
-      translate([10,5,25]) rotate([90,0,0]) cylinder(d = 4.1, h = 15, center = true);
+      translate([10,5,25]) rotateX(90) cylinder(d = 4.1, h = 15, center = true);
     }
     
-    // holes to mount servo
-    translateCopy([0,36,0]) translate([0,142,25]) cylinder(d = 4.1, h = 11, center = true);
+    translateCopyY(36)
+    {
+      // holes to mount servo
+      translate([0,142,25]) cylinder(d = 4.1, h = 11, center = true);
     
-    // holes to mount motor
-    translateCopy([0,36,0]) translate([0,20,25]) rotate([0,90,0]) 
-      cylinder(d = 3.2, h = 51, center = true);
+      // holes to mount motor
+      translate([0,20,25]) rotateY(90) 
+        cylinder(d = 3.2, h = 51, center = true);
+    }
   } 
 }

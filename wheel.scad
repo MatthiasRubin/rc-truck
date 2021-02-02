@@ -3,6 +3,7 @@
 
 // used modules
 use <copy.scad>
+use <transform.scad>
 
 
 // global definitions
@@ -45,7 +46,7 @@ rimHoleDiameter = 13;
 // wheel
 module wheel()
 {
-  translate([wheelWidth/2+wheelMountOffset,0,0]) rotate([0,-90,0])
+  translateX(wheelWidth/2+wheelMountOffset) rotateY(-90)
   {
     // rim
     rim();
@@ -69,19 +70,19 @@ module tire()
       cylinder(d = basicWheelDiameter, h = wheelWidth/2, center = true);
       
       // shape wheel
-      mirrorCopy([0,0,1]) translate([0,0,wheelWidth/4])
+      mirrorCopyZ() translateZ(wheelWidth/4)
         cylinder(d1 = basicWheelDiameter, d2 = wheelDiameter-3*profileDepth, h = wheelWidth/4);
       
       // profile
-      rotateCopy([0,0,360/numberOfProfiles],numberOfProfiles-1) rotateCopy([180,0,0]) 
-        translate([wheelDiameter/2-profileDepth,0,0]) rotate([0,90,0]) profile();
+      rotateCopyZ(360/numberOfProfiles,numberOfProfiles-1) rotateCopyX(180) 
+        translateX(wheelDiameter/2-profileDepth) rotateY(90) profile();
     }
 
     // hole for rim
     cylinder(d = rimDiameter+0.2, h = wheelWidth+1, center = true);
     
     // egde for rim
-    mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2-0.1])
+    mirrorCopyZ() translateZ(-wheelWidth/2-0.1)
       cylinder(d1 = outerRimDiameter+0.2, d2 = innerRimDiameter+0.2, h = 2*rimThickness);
   }
 }
@@ -106,22 +107,22 @@ module profile()
         d2 = innerProfileDiameter, h = 2*profileDepth+1, center = true);
       
       // remove unused parts
-      translate([sign(profileOffset[0])*outerProfileDiameter,0,0]) 
+      translateX(sign(profileOffset[0])*outerProfileDiameter) 
         cube(2*outerProfileDiameter, center = true);
-      translate([0,sign(profileOffset[1])*outerProfileDiameter,0]) 
+      translateY(sign(profileOffset[1])*outerProfileDiameter) 
         cube(2*outerProfileDiameter, center = true);
     }
     
     // interrupt profile
     profileGap = profileWidth/2;
     profileSize = profileWidth + 2*profileDepth;
-    rotate([0,0,profileAngle]) translateCopy([-profileSize,0,0]) 
+    rotateZ(profileAngle) translateCopyX(-profileSize) 
       cube([profileGap,2*profileSize,2*profileSize], center = true);
     
     // remove unused parts
     profileCutOffOffset = (outerProfileDiameter+wheelWidth)/2;
-    translate([-profileCutOffOffset,0,0]) cube(outerProfileDiameter, center = true);
-    translate([outerProfileDiameter/2,0,0]) cube(outerProfileDiameter, center = true);
+    translateX(-profileCutOffOffset) cube(outerProfileDiameter, center = true);
+    translateX(outerProfileDiameter/2) cube(outerProfileDiameter, center = true);
   }
 }
 
@@ -137,7 +138,7 @@ module rim()
       cylinder(d = rimDiameter,h = wheelWidth, center = true);
       
       // rim edge
-      mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2])
+      mirrorCopyZ() translateZ(-wheelWidth/2)
         cylinder(d1 = outerRimDiameter, d2 = innerRimDiameter, h = 2*rimThickness);
     }
 
@@ -145,29 +146,29 @@ module rim()
     cylinder(d = innerRimDiameter, h = wheelWidth+1, center = true);
       
     // smooth edge
-    mirrorCopy([0,0,1]) translate([0,0,-wheelWidth/2-rimThickness])
+    mirrorCopyZ() translateZ(-wheelWidth/2-rimThickness)
       cylinder(d1 = outerRimDiameter, d2 = innerRimDiameter, h = 2*rimThickness);
   }
   
   // wheel mount
   wheelMountHeight = pitchCircleDiameter - rimHoleDiameter;
   wheelMountOffset = wheelMountHeight - wheelMountOffset;
-  translate([0,0,wheelWidth/2 - wheelMountOffset]) difference()
+  translateZ(wheelWidth/2 - wheelMountOffset) difference()
   {
     // basic wheel mount
     wheelHubDiameter = 2*pitchCircleDiameter - rimHoleDiameter;
     cylinder(d1 = rimDiameter, d2 = wheelHubDiameter,h = wheelMountHeight);
     
     // shape wheel mount
-    translate([0,0,-rimThickness]) 
+    translateZ(-rimThickness) 
       cylinder(d1 = rimDiameter, d2 = wheelHubDiameter-rimThickness,h = wheelMountHeight);
     
     // rim hole 
     cylinder(d = rimHoleDiameter,h = wheelMountHeight+1);
     
     // screw holes
-    rotateCopy([0,0,360/numberOfScrewHoles], numberOfScrewHoles-1)
-      translate([pitchCircleDiameter/2,0,0]) rotate([0,0,30])
+    rotateCopyZ(360/numberOfScrewHoles, numberOfScrewHoles-1)
+      translateX(pitchCircleDiameter/2) rotateZ(30)
         cylinder(d = screwHoleDiameter, h = wheelMountHeight+1, $fn = 6);
   }
 }

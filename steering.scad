@@ -3,6 +3,7 @@
 
 // used modules
 use <copy.scad>
+use <transform.scad>
 
 
 // used parts
@@ -23,7 +24,7 @@ steering();
 module steering()
 {
   // steering servo
-  translate([0,-35,20]) rotate([180,0,0]) servo();
+  translate([0,-35,20]) rotateX(180) servo();
   
   // servo arm
   servoArm();
@@ -41,21 +42,24 @@ module servoArm()
     union()
     {
       // basic arm
-      translate([0,-1.5,0]) cube([10,17,5], center = true);
+      translateY(-1.5) cube([10,17,5], center = true);
     
       // roundings
-      translate([0,-10,0]) cylinder(d = 10, h = 5, center = true);
+      translateY(-10) cylinder(d = 10, h = 5, center = true);
       translate([0,7,-3]) cylinder(d = 10, h = 11, center = true);
       
       // steering arm joint
       translate([0,10,-16.5]) cylinder(d = 4, h = 9.5);
     }
     
-    // hole for servo shaft
-    translate([0,-10,-1]) cylinder(d = 6.2, h = 4);
-    
-    // hole for screw
-    translate([0,-10,0]) cylinder(d = 3, h = 6, center = true);
+    translateY(-10) 
+    {
+      // hole for servo shaft
+      translateZ(-1) cylinder(d = 6.2, h = 4);
+      
+      // hole for screw
+      cylinder(d = 3, h = 6, center = true);
+    }
   }
 }
 
@@ -65,13 +69,13 @@ module steeringArm()
 {
   translate([0,-20,-6]) difference()
   {
-    rotate([0,0,10.2]) translate([-19.8,0,0]) 
+    rotateZ(10.2) translateX(-19.8) 
     {
       // basic arm
       cube([39.6,8,4], center = true);
       
       // roundings
-      mirrorCopy([1,0,0]) translate([19.8,0,0]) cylinder(d = 8, h = 4, center = true);
+      mirrorCopyX() translateX(19.8) cylinder(d = 8, h = 4, center = true);
       
       // steering knuckle joint
       translate([-19.8,0,-9]) cylinder(d = 3.5, h = 9);

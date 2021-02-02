@@ -42,7 +42,7 @@ module rotateCopyX(x = 0, n = 1, center = false)
 // y: around the y-axis
 // n: number of copies
 // center: rotate on both sides equally
-module rotateCopyY(x = 0, n = 1, center = false)
+module rotateCopyY(y = 0, n = 1, center = false)
 {
   rotateCopy([0,y,0], n, center) children();
 }
@@ -130,21 +130,21 @@ module mirrorCopy(v = [1,0,0])
 // this function copies his children and mirrors the copy in x-direction
 module mirrorCopyX()
 {
-  mirrorCopyX([1,0,0]) children();
+  mirrorCopy([1,0,0]) children();
 }
 
 
 // this function copies his children and mirrors the copy in y-direction
 module mirrorCopyY()
 {
-  mirrorCopyX([0,1,0]) children();
+  mirrorCopy([0,1,0]) children();
 }
 
 
 // this function copies his children and mirrors the copy in z-direction
 module mirrorCopyZ()
 {
-  mirrorCopyX([0,0,1]) children();
+  mirrorCopy([0,0,1]) children();
 }
 
 

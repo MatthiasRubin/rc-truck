@@ -22,9 +22,6 @@ $fs = 0.5;
 thinWall = 1;
 strongWall = 1.5;
 
-// wheels
-wheelWidth = 20;
-
 // gears
 inputGearSize = 10;
 outputGearSize = 20;
@@ -45,9 +42,14 @@ outputBearingWidth = 4;
 outputBearingOffset = outputBearingWidth/2 + outputGearOffset + 0.1;
 wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 
+// wheel hubs
+wheelHubLatchSize = 4;
+wheelScrewLength = strongWall + 2*getRimThickness() + thinWall;
+
 // shafts
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
 outputShaftDiameter = outputBearingInnerDiameter - 0.1;
+outputShaftConnectionLenght = strongWall + wheelScrewLength + wheelHubLatchSize;
 
 // screws
 screwDiameter = 3;
@@ -65,15 +67,18 @@ module rearAxle(width = 140)
 {
   render() translateZ(-12.5)
   {
-    // housing
-    housingWidth = width - 2*wheelWidth;
-    housingTop(housingWidth);
-    housingBottom(housingWidth);
+    // wheels
+    wheelOffset = width/2 - getWheelWidth();
     
     // shaft
-    shaftLength = housingWidth/2;
+    shaftLength = wheelOffset - getRimThickness() - strongWall;
     leftShaft(shaftLength);
     rotateX(45) rightShaft(shaftLength);
+    
+    // housing
+    housingWidth = 2*shaftLength;
+    housingTop(housingWidth);
+    housingBottom(housingWidth);
     
     // gears
     inputGear();
@@ -88,11 +93,14 @@ module rearAxle(width = 140)
     rotateCopyY(180)
     {
       // wheel bearing
-      wheelBearingOffset = housingWidth/2 - wheelBearingOffset;
+      wheelBearingOffset = shaftLength - wheelBearingOffset;
       translateX(wheelBearingOffset) outputBearing();
+      
+      // wheelHubs
+      translateX(shaftLength) wheelHub();
    
       // wheels
-      translateX(shaftLength) wheel();
+      translateX(wheelOffset) rotateCopyY(180) wheel();
     }
   }
 }
@@ -485,6 +493,36 @@ module rightShaft(length)
     boxSize = 2*outputShaftDiameter + 2*strongWall;
     bottomOffset = boxSize/2 + sqrt(outputShaftDiameter^2 / 2)/2;
     translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], center = true);
+  }
+}
+
+
+// wheel hub
+module wheelHub()
+{
+  rotateY(90)
+  difference()
+  {
+    
+    union()
+    {
+      // basic wheel hub
+      wheelHubDiameter = getPitchCircleDiameter() + getWheelScrewDiameter();
+      cylinder(d = wheelHubDiameter, h = strongWall);
+      
+      // shaft mount
+      shaftMountDiameter = getRimHoleDiameter() - 0.2;
+      shaftMountLength = outputShaftConnectionLenght + strongWall;
+      cylinder(d = shaftMountDiameter, h = shaftMountLength);
+      
+      // wheel screws
+      screwDiameter = getWheelScrewDiameter() - 0.3;
+      numberOfScrews = getNumberOfWheelScrews();
+      rotateCopyZ(360/numberOfScrews, numberOfScrews-1) translateX(getPitchCircleDiameter()/2)
+        rotateZ(30) cylinder(d = screwDiameter, h = wheelScrewLength, $fn = 6);
+    }
+    
+    
   }
 }
 

@@ -31,7 +31,7 @@ rimThickness = 1;
 innerRimDiameter = rimDiameter-2*rimThickness;
 outerRimDiameter = rimDiameter+rimThickness;
 pitchCircleDiameter = 18;
-numberOfScrewHoles = 8;
+numberOfScrews = 8;
 screwHoleDiameter = 3;
 rimHoleDiameter = 13;
 
@@ -167,8 +167,33 @@ module rim()
     cylinder(d = rimHoleDiameter,h = wheelMountHeight+1);
     
     // screw holes
-    rotateCopyZ(360/numberOfScrewHoles, numberOfScrewHoles-1)
+    rotateCopyZ(360/numberOfScrews, numberOfScrews-1)
       translateX(pitchCircleDiameter/2) rotateZ(30)
         cylinder(d = screwHoleDiameter, h = wheelMountHeight+1, $fn = 6);
   }
 }
+
+
+// get total wheel width
+function getWheelWidth() = wheelWidth + wheelMountOffset;
+
+// get total rim thickness
+function getRimThickness() = rimThickness;
+
+// get pitch hole diameter
+function getPitchCircleDiameter() = pitchCircleDiameter;
+
+// get number of wheel screws
+function getNumberOfWheelScrews() = numberOfScrews;
+
+// get wheel screw hole diameter
+function getWheelScrewDiameter() = screwHoleDiameter;
+
+// get rim hole diameter
+function getRimHoleDiameter() = rimHoleDiameter;
+
+
+
+
+
+

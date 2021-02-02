@@ -43,13 +43,14 @@ outputBearingOffset = outputBearingWidth/2 + outputGearOffset + 0.1;
 wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 
 // wheel hubs
-wheelHubLatchSize = 4;
 wheelScrewLength = strongWall + 2*getRimThickness() + thinWall;
+wheelHubLatchSize = 4;
+wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2;
 
 // shafts
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
 outputShaftDiameter = outputBearingInnerDiameter - 0.1;
-outputShaftConnectionLenght = strongWall + wheelScrewLength + wheelHubLatchSize;
+outputShaftConnectionLenght = wheelHubLatchOffset + wheelHubLatchSize/2 + strongWall;
 
 // screws
 screwDiameter = 3;
@@ -97,7 +98,11 @@ module rearAxle(width = 140)
       translateX(wheelBearingOffset) outputBearing();
       
       // wheelHubs
-      translateX(shaftLength) wheelHub();
+      translateX(shaftLength)
+      {
+        wheelHub();
+        wheelHubLatch();
+      }
    
       // wheels
       translateX(wheelOffset) rotateCopyY(180) wheel();
@@ -425,7 +430,7 @@ module leftShaft(length)
       
       // wheel and shaft connection
       shaftConnectionOffset = outputShaftDiameter - 0.3;
-      shaftConnectionLength = length + shaftConnectionOffset + outputShaftDiameter;
+      shaftConnectionLength = length + shaftConnectionOffset + outputShaftConnectionLenght;
       translateX(-shaftConnectionOffset) rotateX(45) rotateY(90) 
         cylinder(d = outputShaftDiameter, h = shaftConnectionLength, $fn = 4);
       
@@ -436,8 +441,13 @@ module leftShaft(length)
         cylinder(d1 = bearingStopDiameter, d2 = outputShaftDiameter, h = 2*thinWall);
     }
     
+    // hole for wheel hub latch
+    wheelHubLatchOffset = wheelHubLatchOffset + length;
+    translateX(wheelHubLatchOffset)
+      cube([wheelHubLatchSize,strongWall,outputShaftDiameter], center = true);
+    
     // flat bottom
-    boxLength = 2*length + 2*outputShaftDiameter + 1;
+    boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
     boxSize = 2*outputShaftDiameter + 2*thinWall;
     bottomOffset = boxSize/2 + sqrt(outputShaftDiameter^2 / 2)/2;
     translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], center = true);
@@ -459,7 +469,7 @@ module rightShaft(length)
         cylinder(d = outputShaftDiameter, h = shaftLength);
       
       // wheel connection
-      wheelConnectionLength = shaftLength + outputShaftDiameter;
+      wheelConnectionLength = shaftLength + outputShaftConnectionLenght;
       translateX(-shaftOffset-1) rotateX(45) rotateY(-90) 
         cylinder(d = outputShaftDiameter, h = wheelConnectionLength-1, $fn = 4);
       
@@ -488,8 +498,13 @@ module rightShaft(length)
         cylinder(d1 = shaftConnectionDiameter, d2 = outputShaftDiameter, h = shaftReductionLength);
     }
     
+    // hole for wheel hub latch
+    wheelHubLatchOffset = wheelHubLatchOffset + length;
+    translateX(-wheelHubLatchOffset)
+      cube([wheelHubLatchSize,strongWall,outputShaftDiameter], center = true);
+    
     // flat bottom
-    boxLength = 2*length + 2*outputShaftDiameter + 1;
+    boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
     boxSize = 2*outputShaftDiameter + 2*strongWall;
     bottomOffset = boxSize/2 + sqrt(outputShaftDiameter^2 / 2)/2;
     translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], center = true);
@@ -500,8 +515,7 @@ module rightShaft(length)
 // wheel hub
 module wheelHub()
 {
-  rotateY(90)
-  difference()
+  rotateY(90) difference()
   {
     
     union()
@@ -522,8 +536,26 @@ module wheelHub()
         rotateZ(30) cylinder(d = screwDiameter, h = wheelScrewLength, $fn = 6);
     }
     
+    // hole for shaft
+    shaftHoleDiameter = outputShaftDiameter + 0.2;
+    translateZ(-1) rotateZ(45)
+      cylinder(d = shaftHoleDiameter, h = outputShaftConnectionLenght+1, $fn = 4);
     
+    // hole for wheel hub latch
+    translateZ(wheelHubLatchOffset)
+      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
   }
+}
+
+
+// wheel hub latch
+module wheelHubLatch()
+{
+  latchLength = getRimHoleDiameter() - 0.3;
+  latchSize = wheelHubLatchSize - 0.1;
+  latchThickness = strongWall - 0.1;
+  translateX(wheelHubLatchOffset)
+    cube([latchSize,latchThickness,latchLength], center = true);
 }
 
 

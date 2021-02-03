@@ -33,12 +33,12 @@ outputGearOffset = getBevelGearOffset(outputGearSize, outputGearAngle, gearModul
 
 // bearings
 inputBearingOuterDiameter = 8.5;
-inputBearingInnerDiameter = 4;
-inputBearingWidth = 3;
+inputBearingInnerDiameter = 5;
+inputBearingWidth = 4;
 inputBearingOffset = inputBearingWidth/2 + inputGearOffset + 2*thinWall + 0.1;
-outputBearingOuterDiameter = 12.5;
+outputBearingOuterDiameter = 10.5;
 outputBearingInnerDiameter = 6;
-outputBearingWidth = 4;
+outputBearingWidth = 3;
 outputBearingOffset = outputBearingWidth/2 + outputGearOffset + 0.1;
 wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 

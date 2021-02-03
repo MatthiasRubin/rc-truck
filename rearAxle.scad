@@ -45,8 +45,8 @@ wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 // wheel hubs
 wheelScrewLength = strongWall + 2*getRimThickness() + thinWall;
 wheelHubLatchSize = 4;
-wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2;
-wheelClipSize = 0.5;
+wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2 + thinWall;
+wheelClipSize = 0.7;
 wheelClipWidth = 2.5;
 
 // shafts
@@ -448,8 +448,9 @@ module leftShaft(length)
     
     // hole for wheel hub latch
     wheelHubLatchOffset = wheelHubLatchOffset + length;
+    wheelHubLatchThickness = strongWall + 0.2;
     translateX(wheelHubLatchOffset)
-      cube([wheelHubLatchSize,strongWall,outputShaftDiameter], center = true);
+      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], center = true);
     
     // flat bottom
     boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
@@ -505,8 +506,9 @@ module rightShaft(length)
     
     // hole for wheel hub latch
     wheelHubLatchOffset = wheelHubLatchOffset + length;
+    wheelHubLatchThickness = strongWall + 0.2;
     translateX(-wheelHubLatchOffset)
-      cube([wheelHubLatchSize,strongWall,outputShaftDiameter], center = true);
+      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], center = true);
     
     // flat bottom
     boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
@@ -524,7 +526,7 @@ module wheelHub()
   {
     wheelClipPhase = 2*thinWall;
     wheelClipLenght = strongWall + 2*getRimThickness()
-      + sqrt(wheelClipPhase^2 + wheelClipSize^2) + 0.2;
+      + sqrt(wheelClipPhase^2 + wheelClipSize^2) + 0.1;
     
     difference()
     {
@@ -549,7 +551,7 @@ module wheelHub()
       // hole for shaft
       shaftHoleDiameter = outputShaftDiameter + 1;
       translateZ(-1) rotateZ(45)
-        cylinder(d = shaftHoleDiameter, h = outputShaftConnectionLenght+1, $fn = 4);
+        cylinder(d = shaftHoleDiameter, h = outputShaftConnectionLenght + 1.5, $fn = 4);
       
       // hole for wheel hub latch
       translateZ(wheelHubLatchOffset)
@@ -587,7 +589,7 @@ module wheelHub()
 module wheelHubLatch()
 {
   latchLength = getRimHoleDiameter() - 0.4;
-  latchSize = wheelHubLatchSize - 0.3;
+  latchSize = wheelHubLatchSize - 0.5;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
     cube([latchSize,latchThickness,latchLength], center = true);

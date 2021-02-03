@@ -67,7 +67,7 @@ rearAxle();
 // assembled rear axle
 module rearAxle(width = 140)
 {
-  render() translateZ(-12.5)
+  translateZ(-12.5)
   {
     // wheels
     wheelOffset = width/2 - getWheelWidth();
@@ -115,28 +115,28 @@ module rearAxle(width = 140)
 // axle housing top
 module housingTop(width)
 {
-  difference()
+  render() difference()
   {
     // basic housing
     basicHousing(width);
     
     
     // remove top half
-    translateZ(-25) cube([width+1,50,50], center = true);
+    translateZ(-25.1) cube([width+1,50,50], center = true);
   }
 }
 
 // axle housing bottom
 module housingBottom(width)
 {
-  difference()
+  render() difference()
   {
     // basic housing
     basicHousing(width);
     
     
     // remove top half
-    translateZ(25) cube([width+1,50,50], center = true);
+    translateZ(25.1) cube([width+1,50,50], center = true);
   }
 }
 

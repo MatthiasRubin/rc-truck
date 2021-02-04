@@ -58,6 +58,13 @@ screwDiameter = 3;
 screwHeadDiameter = 5.5;
 nutDiameter = 6.01;
 nutWidth = 2.4;
+nutHoleDepth = nutWidth + 0.2;
+
+// axle mount
+axleMountDistance = 40;
+axleMountSize = nutDiameter + 2*strongWall;
+axleMountNutHoleDepth = nutHoleDepth + outputShaftDiameter/2 + thinWall;
+axleMountHeight = axleMountNutHoleDepth + strongWall;
 
 
 // shows rear axle
@@ -67,7 +74,7 @@ rearAxle();
 // assembled rear axle
 module rearAxle(width = 140)
 {
-  translateZ(-12.5)
+  translateZ(-axleMountHeight)
   {
     // wheels
     wheelOffset = width/2 - getWheelWidth();
@@ -192,6 +199,9 @@ module basicHousing(width)
     backScrewX = outputGearHoleOffset - outputGearHoleDepth - thinWall - nutDiameter/2;
     backScrewY = sqrt(shaftConnectionHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
     
+    // axle mount
+    axleMountOffset = axleMountDistance/2;
+    
     union()
     {
       // shaft housing
@@ -296,7 +306,8 @@ module basicHousing(width)
         cylinder(d = supportDiameter, h = supportThickness, center = true);
         
       // support to mount axle
-      mirrorCopyX() translate([20,0,6.25]) cube([10,10,12.5], center = true);
+      mirrorCopyX() translate([axleMountOffset,0,axleMountHeight/2])
+        cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
     }
     
     // hole for output shaft
@@ -372,7 +383,6 @@ module basicHousing(width)
     // holes to screw halfs together
     screwHeadHole = screwHeadDiameter + 0.2;
     screwHeadOffset = supportThickness/2;
-    nutHoleDepth = nutWidth + 0.2;
     nutHoleOffset = nutHoleDepth + supportThickness/2;
     
     // left
@@ -415,13 +425,13 @@ module basicHousing(width)
     }
      
     // holes to mount axle
-    mirrorCopyX() translateX(20)
+    mirrorCopyX() translateX(axleMountOffset)
     {
       // hole for screws
-      cylinder(d = screwHole, h = 20);
+      cylinder(d = screwHole, h = axleMountHeight+1);
     
-      // hole for nuta
-      cylinder(d = nutHole, h = nutHoleDepth + outputShaftHole/2, $fn = 6);
+      // hole for nuts
+      cylinder(d = nutHole, h = axleMountNutHoleDepth, $fn = 6);
     }
   }
 }
@@ -609,7 +619,7 @@ module wheelHub()
 module wheelHubLatch()
 {
   latchLength = getRimHoleDiameter() - 0.4;
-  latchSize = wheelHubLatchSize - 0.5;
+  latchSize = wheelHubLatchSize - 0.6;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
     cube([latchSize,latchThickness,latchLength], center = true);

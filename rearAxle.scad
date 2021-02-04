@@ -35,8 +35,8 @@ outputGearOffset = getBevelGearOffset(outputGearSize, outputGearAngle, gearModul
 inputBearingOuterDiameter = 8.5;
 inputBearingInnerDiameter = 5;
 inputBearingWidth = 2;
-inputBearingOffset = inputBearingWidth/2 + inputGearOffset + 2*thinWall + 0.1;
-inputBearingOffset2 = inputBearingOffset + inputBearingWidth + thinWall;
+inputBearingOffset1 = inputBearingWidth/2 + inputGearOffset + 2*thinWall + 0.1;
+inputBearingOffset2 = inputBearingOffset1 + inputBearingWidth + thinWall;
 outputBearingOuterDiameter = 10.5;
 outputBearingInnerDiameter = 6;
 outputBearingWidth = 3;
@@ -47,8 +47,6 @@ wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 wheelScrewLength = strongWall + 2*getRimThickness() + thinWall;
 wheelHubLatchSize = 4;
 wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2 + thinWall;
-wheelClipSize = 0.7;
-wheelClipWidth = 2.5;
 
 // shafts
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
@@ -90,7 +88,7 @@ module rearAxle(width = 140)
     outputGear();
     
     // input bearings
-    translateY(-inputBearingOffset) inputBearing();
+    translateY(-inputBearingOffset1) inputBearing();
     translateY(-inputBearingOffset2) inputBearing();
     
     // output bearing
@@ -366,7 +364,7 @@ module basicHousing(width)
         h = inputGearTransitionOffset);
     
     // holes for input bearings
-    translateY(-inputBearingOffset) rotateX(90) 
+    translateY(-inputBearingOffset1) rotateX(90) 
       cylinder(d = inputBearingHole, h = inputBearingHoleDepth, center = true);
     translateY(-inputBearingOffset2) rotateX(90) 
       cylinder(d = inputBearingHole, h = inputBearingHoleDepth, center = true);
@@ -537,7 +535,7 @@ module inputShaft()
     {
       // input shaft
       inputShaftLength = 2*inputBearingWidth + thinWall + strongWall;
-      inputShaftOffset = inputBearingOffset - inputBearingWidth/2;
+      inputShaftOffset = inputBearingOffset1 - inputBearingWidth/2;
       translateZ(inputShaftOffset)
         cylinder(d = inputShaftDiameter, h = inputShaftLength);
       
@@ -548,14 +546,14 @@ module inputShaft()
         cylinder(d = inputShaftDiameter, h = shaftConnectionLenght+2, $fn = 4);
       
       // end stop
-      endStopOffset = inputBearingOffset + inputBearingWidth/2;
+      endStopOffset = inputBearingOffset1 + inputBearingWidth/2;
       endStopDiameter = inputShaftDiameter + thinWall;
       translateZ(endStopOffset)
         cylinder(d = endStopDiameter, h = thinWall);
     }
     
     // flat bottom
-    boxLength = 3*(inputBearingOffset + inputBearingWidth + inputShaftDiameter);
+    boxLength = 3*(inputBearingOffset2 + inputBearingWidth + inputShaftDiameter);
     boxSize = 2*inputShaftDiameter;
     bottomOffset = boxSize/2 + sqrt(inputShaftDiameter^2 / 2)/2;
     translateZ(-bottomOffset) cube([boxSize,boxLength,boxSize], center = true);
@@ -566,65 +564,43 @@ module inputShaft()
 // wheel hub
 module wheelHub()
 {
-  rotateY(90) 
+  rotateY(90) difference()
   {
-    wheelClipPhase = 2*thinWall;
-    wheelClipLenght = strongWall + 2*getRimThickness()
-      + sqrt(wheelClipPhase^2 + wheelClipSize^2) + 0.1;
-    
-    difference()
+    union()
     {
-      union()
-      {
-        // basic wheel hub
-        wheelHubDiameter = getPitchCircleDiameter() + getWheelScrewDiameter();
-        cylinder(d = wheelHubDiameter, h = strongWall);
-        
-        // shaft mount
-        shaftMountDiameter = getRimHoleDiameter() - 0.3;
-        shaftMountLength = outputShaftConnectionLenght + strongWall;
-        cylinder(d = shaftMountDiameter, h = shaftMountLength);
-        
-        // wheel screws
-        screwDiameter = getWheelScrewDiameter() - 0.5;
-        numberOfScrews = getNumberOfWheelScrews();
-        rotateCopyZ(360/numberOfScrews, numberOfScrews-1) translateX(getPitchCircleDiameter()/2)
-          rotateZ(30) cylinder(d = screwDiameter, h = wheelScrewLength, $fn = 6);
-      }
+      // basic wheel hub
+      wheelHubDiameter = getPitchCircleDiameter() + getWheelScrewDiameter();
+      cylinder(d = wheelHubDiameter, h = strongWall);
       
-      // hole for shaft
-      shaftHoleDiameter = outputShaftDiameter + 1;
-      translateZ(-1) rotateZ(45)
-        cylinder(d = shaftHoleDiameter, h = outputShaftConnectionLenght + 1.5, $fn = 4);
+      // shaft mount
+      shaftMountDiameter = getRimHoleDiameter() - 0.3;
+      shaftMountLength = outputShaftConnectionLenght + strongWall;
+      cylinder(d = shaftMountDiameter, h = shaftMountLength);
       
-      // hole for wheel hub latch
-      translateZ(wheelHubLatchOffset)
-        cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
-      
-      // hole for wheel clip
-      clipHoleWidth = wheelClipWidth + 1;
-      clipHoleDepth = 3*thinWall;
-      clipHoleHeight = wheelClipLenght - thinWall + 1;
-      clipHoleOffsetY = getRimHoleDiameter()/2 - clipHoleDepth/2 + 0.1;
-      clipHoleOffsetZ = clipHoleHeight/2 + thinWall;
-      mirrorCopyY() translate([0,clipHoleOffsetY,clipHoleOffsetZ])
-        cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], center = true);
+      // wheel screws
+      screwDiameter = getWheelScrewDiameter() - 0.5;
+      numberOfScrews = getNumberOfWheelScrews();
+      rotateCopyZ(360/numberOfScrews, numberOfScrews-1) translateX(getPitchCircleDiameter()/2)
+        rotateZ(30) cylinder(d = screwDiameter, h = wheelScrewLength, $fn = 6);
     }
     
-    // wheel clip
-    clipOffset = getRimHoleDiameter()/2 - thinWall/2 - 0.4;
-    mirrorCopyY() translateY(clipOffset)
-    {
-      // basic wheel clip
-      translateZ(wheelClipLenght/2)
-        cube([wheelClipWidth,thinWall,wheelClipLenght], center = true);
-      
-      // shape wheel clip
-      clipAngle = atan(wheelClipSize/wheelClipPhase);
-      translate([0,thinWall/2,wheelClipLenght]) rotateX(180+clipAngle) 
-        translateX(-wheelClipWidth/2)
-          cube([wheelClipWidth,wheelClipSize,wheelClipPhase]);
-    }
+    // hole for shaft
+    shaftHoleDiameter = outputShaftDiameter + 1;
+    translateZ(-1) rotateZ(45)
+      cylinder(d = shaftHoleDiameter, h = outputShaftConnectionLenght + 1.5, $fn = 4);
+    
+    // hole for wheel hub latch
+    translateZ(wheelHubLatchOffset)
+      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
+    
+    // holes for wheel clip
+    clipHoleHeight = strongWall;
+    clipHoleWidth = 2*strongWall;
+    clipHoleDepth = strongWall + 0.5;
+    clipHoleOffsetY = getRimHoleDiameter()/2 - clipHoleDepth/2 + 0.5;
+    clipHoleOffsetZ = strongWall + clipHoleHeight/2 + 2*getRimThickness();
+    rotateCopyZ(120,2, center = true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
+      cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], center = true);
   }
 }
 
@@ -643,7 +619,35 @@ module wheelHubLatch()
 // wheel clip
 module wheelClip()
 {
-  
+  rotateY(90) translateZ(getRimThickness())
+  {
+    difference()
+    {
+      // basic clip
+      clipDiameter = getRimHoleDiameter() + strongWall;
+      clipHeight = strongWall;
+      cylinder(d = clipDiameter, h = strongWall);
+      
+      // hollow clip
+      clipHoleDiameter = getRimHoleDiameter();
+      clipHoleDepth = 2*strongWall+1;
+      cylinder(d = clipHoleDiameter, h = clipHoleDepth, center = true);
+      
+      // clip gap
+      clipGapOffset = clipDiameter/2;
+      translateY(-clipGapOffset) 
+        cube([strongWall,clipDiameter,clipHoleDepth], center = true);
+    }
+    
+    // clip pins
+    clipPinHeight = thinWall;
+    clipPinDepth = thinWall;
+    clipPinWidth = 2*thinWall;
+    clipPinOffsetY = getRimHoleDiameter()/2 - clipPinDepth/2 + 0.2;
+    clipPinOffsetZ = clipPinHeight/2;
+    rotateCopyZ(120,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
+      cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);
+  }
 }
 
 

@@ -14,6 +14,7 @@ use <wheel.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
+$vpd = 330;
 
 
 // local definitions
@@ -44,9 +45,9 @@ outputBearingOffset = outputBearingWidth/2 + outputGearOffset + 0.1;
 wheelBearingOffset = outputBearingWidth/2 + thinWall + 0.5;
 
 // wheel hubs
-wheelScrewLength = strongWall + 2*getRimThickness() + thinWall;
+wheelScrewLength = strongWall + 2*getRimThickness() + 0.2;
 wheelHubLatchSize = 4;
-wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2 + thinWall;
+wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2 + 2*thinWall;
 
 // shafts
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
@@ -606,7 +607,7 @@ module wheelHub()
     // holes for wheel clip
     clipHoleHeight = strongWall;
     clipHoleWidth = 2*strongWall;
-    clipHoleDepth = strongWall + 0.5;
+    clipHoleDepth = 2*thinWall + 0.5;
     clipHoleOffsetY = getRimHoleDiameter()/2 - clipHoleDepth/2 + 0.5;
     clipHoleOffsetZ = strongWall + clipHoleHeight/2 + 2*getRimThickness();
     rotateCopyZ(120,2, center = true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
@@ -631,15 +632,15 @@ module wheelClip()
 {
   rotateY(90) translateZ(getRimThickness())
   {
+    clipHoleDiameter = getRimHoleDiameter() - thinWall;
     difference()
     {
       // basic clip
-      clipDiameter = getRimHoleDiameter() + strongWall;
+      clipDiameter = clipHoleDiameter + strongWall;
       clipHeight = strongWall;
       cylinder(d = clipDiameter, h = strongWall);
       
       // hollow clip
-      clipHoleDiameter = getRimHoleDiameter();
       clipHoleDepth = 2*strongWall+1;
       cylinder(d = clipHoleDiameter, h = clipHoleDepth, center = true);
       
@@ -651,9 +652,9 @@ module wheelClip()
     
     // clip pins
     clipPinHeight = thinWall;
-    clipPinDepth = thinWall;
+    clipPinDepth = strongWall;
     clipPinWidth = 2*thinWall;
-    clipPinOffsetY = getRimHoleDiameter()/2 - clipPinDepth/2 + 0.2;
+    clipPinOffsetY = clipHoleDiameter/2 - clipPinDepth/2 + 0.2;
     clipPinOffsetZ = clipPinHeight/2;
     rotateCopyZ(120,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
       cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);

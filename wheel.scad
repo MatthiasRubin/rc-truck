@@ -9,6 +9,7 @@ use <transform.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
+$vpd = 210;
 
 
 // local definitions
@@ -34,8 +35,6 @@ pitchCircleDiameter = 18;
 numberOfScrews = 8;
 screwHoleDiameter = 3;
 rimHoleDiameter = 13;
-
-
 
 
 // shows wheel

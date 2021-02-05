@@ -135,7 +135,7 @@ module housingTop(width)
     basicHousing(width);
     
     // remove top half
-    translateZ(-25.1) cube([width+1,50,50], center = true);
+    translateZ(-25.2) cube([width+1,50,50], center = true);
   }
 }
 
@@ -148,7 +148,7 @@ module housingBottom(width)
     basicHousing(width);
     
     // remove top half
-    translateZ(25.1) cube([width+1,50,50], center = true);
+    translateZ(25.2) cube([width+1,50,50], center = true);
   }
 }
 
@@ -197,8 +197,10 @@ module basicHousing(width)
     rightScrewX = sqrt(inputGearHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
     holeDiameter = (shaftConnectionHole + outputShaftHole)/2;
     rightScrewY = sqrt(holeDiameter^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
-    backScrewX = outputGearHoleOffset - outputGearHoleDepth - thinWall - nutDiameter/2;
+    backScrewX = (outputGearHoleOffset - outputGearHoleDepth)/2 - thinWall - nutDiameter/2;
     backScrewY = sqrt(shaftConnectionHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
+    wheelScrewX = wheelBearingOffset - outputBearingHoleDepth/2 - thinWall - screwDiameter/2;
+    wheelScrewY = sqrt(outputShaftHole^2 - supportThickness^2)/2 + thinWall + nutDiameter/2;
     
     // axle mount
     axleMountOffset = axleMountDistance/2;
@@ -306,6 +308,10 @@ module basicHousing(width)
       translate([backScrewX,backScrewY,0]) 
         cylinder(d = supportDiameter, h = supportThickness, center = true);
         
+      // wheel
+      mirrorCopyX() mirrorCopyY() translate([wheelScrewX,wheelScrewY,0]) 
+        cylinder(d = supportDiameter, h = supportThickness, center = true);
+      
       // support to mount axle
       mirrorCopyX() translate([axleMountOffset,0,axleMountHeight/2])
         cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
@@ -414,6 +420,19 @@ module basicHousing(width)
     
     // back
     translate([backScrewX,backScrewY,0]) 
+    {
+      // hole for screw
+      cylinder(d = screwHole, h = supportThickness+1, center = true);
+      
+      // hole for screw head
+      translateZ(screwHeadOffset) cylinder(d = screwHeadHole, h = outputGearHole);
+      
+      // hole for nut
+      translateZ(-nutHoleOffset) cylinder(d = nutHole, h = nutHoleDepth, $fn = 6);
+    }
+    
+    // wheel
+    mirrorCopyX() mirrorCopyY() translate([wheelScrewX,wheelScrewY,0]) 
     {
       // hole for screw
       cylinder(d = screwHole, h = supportThickness+1, center = true);
@@ -637,11 +656,11 @@ module wheelClip()
     {
       // basic clip
       clipDiameter = clipHoleDiameter + strongWall;
-      clipHeight = strongWall;
-      cylinder(d = clipDiameter, h = strongWall);
+      clipHeight = 2*thinWall;
+      cylinder(d = clipDiameter, h = clipHeight);
       
       // hollow clip
-      clipHoleDepth = 2*strongWall+1;
+      clipHoleDepth = 2*clipHeight+1;
       cylinder(d = clipHoleDiameter, h = clipHoleDepth, center = true);
       
       // clip gap
@@ -651,12 +670,13 @@ module wheelClip()
     }
     
     // clip pins
-    clipPinHeight = thinWall;
+    clipPinHeight = strongWall - 0.2;
     clipPinDepth = strongWall;
     clipPinWidth = 2*thinWall;
     clipPinOffsetY = clipHoleDiameter/2 - clipPinDepth/2 + 0.2;
     clipPinOffsetZ = clipPinHeight/2;
-    rotateCopyZ(120,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
+    rotationAngle = 120 * getRimHoleDiameter() / clipHoleDiameter;
+    rotateCopyZ(rotationAngle,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
       cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);
   }
 }

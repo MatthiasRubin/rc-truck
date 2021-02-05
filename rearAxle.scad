@@ -589,7 +589,7 @@ module wheelHub()
       cylinder(d = shaftMountDiameter, h = shaftMountLength);
       
       // wheel screws
-      screwDiameter = getWheelScrewDiameter() - 0.5;
+      screwDiameter = getWheelScrewDiameter() - 0.7;
       numberOfScrews = getNumberOfWheelScrews();
       rotateCopyZ(360/numberOfScrews, numberOfScrews-1) translateX(getPitchCircleDiameter()/2)
         rotateZ(30) cylinder(d = screwDiameter, h = wheelScrewLength, $fn = 6);
@@ -619,7 +619,7 @@ module wheelHub()
 // wheel hub latch
 module wheelHubLatch()
 {
-  latchLength = getRimHoleDiameter() - 0.4;
+  latchLength = getRimHoleDiameter() - 0.6;
   latchSize = wheelHubLatchSize - 0.6;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
@@ -632,7 +632,7 @@ module wheelClip()
 {
   rotateY(90) translateZ(getRimThickness())
   {
-    clipHoleDiameter = getRimHoleDiameter() - thinWall;
+    clipHoleDiameter = getRimHoleDiameter() - 0.5;
     difference()
     {
       // basic clip

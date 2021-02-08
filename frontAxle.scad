@@ -87,10 +87,11 @@ module frontAxle(width = 140)
       
       // wheels
       wheelOffset = wheelHubOffset + wheelOffset;
-      translateX(-wheelOffset)
-      {
-        wheel();
-      }
+      translateX(-wheelOffset) wheel();
+      
+      // wheel clips
+      wheelClipOffset = wheelOffset - getRimThickness();
+      translateX(wheelClipOffset) wheelClip();
     }
     
     // steering knuckles

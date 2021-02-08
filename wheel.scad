@@ -36,10 +36,14 @@ numberOfScrews = 8;
 screwHoleDiameter = 3;
 rimHoleDiameter = 13;
 
+// wheel clip
+strongWall = 1.5;
 
 // shows wheel
-//rotateCopy([0,180,0]) 
+//rotateCopyY(180)
   wheel();
+
+wheelClip();
 
 
 // wheel
@@ -169,6 +173,42 @@ module rim()
     rotateCopyZ(360/numberOfScrews, numberOfScrews-1)
       translateX(pitchCircleDiameter/2) rotateZ(30)
         cylinder(d = screwHoleDiameter, h = wheelMountHeight+1, $fn = 6);
+  }
+}
+
+
+// wheel clip
+module wheelClip()
+{
+  rotateY(90) translateZ(rimThickness)
+  {
+    clipHoleDiameter = rimHoleDiameter - 0.5;
+    difference()
+    {
+      // basic clip
+      clipDiameter = clipHoleDiameter + strongWall;
+      clipHeight = 2*profileDepth;
+      cylinder(d = clipDiameter, h = clipHeight);
+      
+      // hollow clip
+      clipHoleDepth = 2*clipHeight+1;
+      cylinder(d = clipHoleDiameter, h = clipHoleDepth, center = true);
+      
+      // clip gap
+      clipGapOffset = clipDiameter/2;
+      translateY(-clipGapOffset) 
+        cube([strongWall,clipDiameter,clipHoleDepth], center = true);
+    }
+    
+    // clip pins
+    clipPinHeight = strongWall - 0.2;
+    clipPinDepth = strongWall;
+    clipPinWidth = 2*profileDepth;
+    clipPinOffsetY = clipHoleDiameter/2 - clipPinDepth/2 + 0.2;
+    clipPinOffsetZ = clipPinHeight/2;
+    rotationAngle = 120 * rimHoleDiameter / clipHoleDiameter;
+    rotateCopyZ(rotationAngle,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
+      cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);
   }
 }
 

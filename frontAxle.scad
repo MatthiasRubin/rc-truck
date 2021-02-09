@@ -24,6 +24,7 @@ strongWall = 1.5;
 
 // steering geometry
 wheelbase = 250;
+caster = 10;
 
 // wheel hub latch
 wheelHubLatchSize = 3;
@@ -55,35 +56,51 @@ frontAxle();
 // assembled front axle
 module frontAxle(width = 140)
 {
-  translateZ(-12.5)
+  translateZ(-4)
   {
     // local definitions
     wheelHubOffset = width/2 - wheelHubDepth;
     bearingOffset = wheelHubOffset - bearingWidth/2 - 0.1;
     
     // axle beam
-    //axleBeamTop();
-    //axleBeamBottom();
+    axleBeamLength = 2*bearingOffset;
+    axleBeamTop(axleBeamLength);
+    axleBeamBottom(axleBeamLength);
+    
+    rotateX(-caster)
+    {
+      // steering knuckles
+      steeringOffset = steeringKnuckleSize * bearingOffset / wheelbase;
+      translateX(-bearingOffset) steeringKnuckle(steeringOffset);
+      translateX(bearingOffset) doubleSteeringKnuckle(steeringOffset);
+      
+      // bearings
+      rotateCopyZ(180)
+      {
+        translateX(bearingOffset)
+        {
+          rotateZ(90) bearing();
+          bearingHousing();
+        }
+      }
+      
+      // steering rod
+      steeringRodLength = 2*(bearingOffset - steeringOffset);
+      translateY(steeringKnuckleSize) steeringRod(steeringRodLength);
+    }
     
     rotateCopyZ(180)
     {
+      // shafts
+      shaftOffset = wheelHubOffset - bearingWidth - 0.2;
+      translateX(shaftOffset) shaft();
+      
       // wheel hubs
       translateX(wheelHubOffset) 
       {
         wheelHub();
         wheelHubLatch();
       }
-      
-      // bearings
-      translateX(bearingOffset)
-      {
-        rotateZ(90) bearing();
-        bearingHousing();
-      }
-      
-      // shafts
-      shaftOffset = wheelHubOffset - bearingWidth - 0.2;
-      translateX(shaftOffset) shaft();
       
       // wheels
       wheelOffset = wheelHubOffset + wheelOffset;
@@ -93,37 +110,64 @@ module frontAxle(width = 140)
       wheelClipOffset = wheelOffset - getRimThickness();
       translateX(wheelClipOffset) wheelClip();
     }
-    
-    // steering knuckles
-    steeringOffset = steeringKnuckleSize * bearingOffset / wheelbase;
-    translateX(-bearingOffset) steeringKnuckle(steeringOffset);
-    translateX(bearingOffset) doubleSteeringKnuckle(steeringOffset);
-    
-    // steering rod
-    steeringRodLength = 2*(bearingOffset - steeringOffset);
-    translateY(steeringKnuckleSize) steeringRod(steeringRodLength);
   }
 }
 
 
 // axle beam: top half
-module axleBeamTop()
+module axleBeamTop(length)
 {
-  
+  difference()
+  {
+    // basic axle beam
+    basicAxleBeam(length);
+    
+    // remove bottom
+    translateZ(-length) cube(2*length, center = true);
+  }
 }
 
 
 // axle beam: bottom half
-module axleBeamBottom()
+module axleBeamBottom(length)
 {
-  
+  difference()
+  {
+    // basic axle beam
+    basicAxleBeam(length);
+    
+    // remove top
+    translateZ(length) cube(2*length, center = true);
+  }
 }
 
 
 // basic axle beam
-module basicAxleBeam()
+module basicAxleBeam(length)
 {
+  mirrorCopyX() translateX(length/2) rotateX(-caster)
+  {
+    rotateX(90) difference()
+    {
+      cylinder(d = 20, h = 6, center = true);
+      
+      cylinder(d = 14, h = 7, center = true);
+      
+      rotateX(90) cylinder(d = 5, h = 21, center = true);
+      
+      translateX(11) cube(22, center = true);
+    }
+    
+    difference()
+    {
+      cylinder(d = 6, h = 20, center = true);
+      cylinder(d = 7, h = 13, center = true);
+      cylinder(d = 3.5, h = 21, center = true);
+    }
+  }
   
+  mirrorCopyZ() linear_extrude(4, scale = [1,0.75]) mirrorCopyX()
+    polygon([[length/2-8,3.05],[0,5],[0,-5],[length/2-12,-5],[length/2-8,-3.05]]);
 }
 
 // doubled steering knuckle
@@ -176,8 +220,13 @@ module bearingHousing()
       housingWidth = bearingWidth/2 + thinWall;
       cylinder(d = housingDiameter, h = housingWidth);
       
+      // steering pin support
+      pinSupportDiameter = steeringPinDiameter + 2*thinWall;
+      pinSupportLength = housingDiameter + thinWall;
+      rotateY(90) cylinder(d = pinSupportDiameter, h = pinSupportLength, center = true);
+      
       // steering pins
-      pinHeight = housingDiameter + 4*strongWall;
+      pinHeight = pinSupportLength + 2*steeringPinDiameter + thinWall;
       rotateY(90) cylinder(d = steeringPinDiameter, h = pinHeight, center = true);
     }
     
@@ -186,11 +235,11 @@ module bearingHousing()
     
     // hole for shaft
     shaftHoleDiameter = bearingOuterDiameter - thinWall;
-    sahftHoleDepth = bearingWidth + 2*thinWall + 1;
-    cylinder(d = shaftHoleDiameter, h = sahftHoleDepth, center = true);
+    shaftHoleDepth = bearingWidth + 2*thinWall + 1;
+    cylinder(d = shaftHoleDiameter, h = shaftHoleDepth, center = true);
     
     // flat bottom
-    boxSize = sahftHoleDepth + 4*strongWall;
+    boxSize = 2*shaftHoleDiameter + 4*strongWall;
     translateZ(-boxSize/2) cube(boxSize, center = true);
   }
 }
@@ -203,12 +252,30 @@ module steeringRod(length)
   
   translateZ(steeringRodThickness)
   {
-    // basic steering rod
-    steeringRodWidth = 2*steeringRodThickness;
-    cube([length,steeringRodWidth,steeringRodThickness], center = true);
+    steeringRodWidth = 2*strongWall;
+    steeringRodOffset = strongWall + thinWall;
+    translateY(-steeringRodOffset)
+    {
+      // basic steering rod
+      steeringRodLength = length - 2*steeringRodOffset;
+      cube([steeringRodLength,steeringRodWidth,steeringRodThickness], center = true);
     
+      mirrorCopyX() translateX(steeringRodLength/2)
+      {
+        // brackets
+        bracketLength = sqrt(2) * steeringRodOffset;
+        bracketOffset = [steeringRodOffset/2,steeringRodOffset/2,0];
+        translate(bracketOffset) rotateZ(45)
+          cube([bracketLength,steeringRodWidth,steeringRodThickness], center = true);
+        
+        // bracket roundings
+        cylinder(d = steeringRodWidth, h = steeringRodThickness, center = true);
+      }
+    }
+        
     mirrorCopyX() translateX(length/2)
     {
+      
       // roundings
       cylinder(d = steeringRodWidth, h = steeringRodThickness, center = true);
       

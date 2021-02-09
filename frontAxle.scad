@@ -13,7 +13,7 @@ use <wheel.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 330;
+$vpd = 280;
 
 
 // local definitions
@@ -47,6 +47,20 @@ bearingWidth = 4;
 // steering knuckle
 steeringPinDiameter = 3;
 steeringKnuckleSize = getPitchCircleDiameter()/2 + getWheelScrewDiameter()/2;
+bearingHousingDiameter = bearingOuterDiameter + 2*strongWall;
+
+// axle beam
+axleBeamThickness = 4;
+axleBeamWidth = 5;
+
+// screws
+screwDiameter = 3;
+screwHeadDiameter = 5.5;
+nutDiameter = 6.01;
+nutWidth = 2.4;
+
+// axle mount
+axleMountDistance = 40;
 
 
 // shows front axle
@@ -56,7 +70,7 @@ frontAxle();
 // assembled front axle
 module frontAxle(width = 140)
 {
-  translateZ(-4)
+  translateZ(-axleBeamThickness)
   {
     // local definitions
     wheelHubOffset = width/2 - wheelHubDepth;
@@ -145,29 +159,91 @@ module axleBeamBottom(length)
 // basic axle beam
 module basicAxleBeam(length)
 {
-  mirrorCopyX() translateX(length/2) rotateX(-caster)
+  translateY(thinWall)
   {
-    rotateX(90) difference()
+    // steering knuckle joints
+    steeringJointOffset = length/2;
+    steeringJointWidth = steeringPinDiameter + 2*strongWall;
+    steeringKnuckleSize = bearingHousingDiameter + thinWall + 0.5;
+    steeringJointInnerDiameter = steeringKnuckleSize + 1;
+    steeringJointOuterDiameter = steeringJointInnerDiameter + steeringJointWidth;
+    mirrorCopyX() translateX(steeringJointOffset) rotateX(-caster)
     {
-      cylinder(d = 20, h = 6, center = true);
+      rotateX(90) difference()
+      {
+        // basic joint
+        cylinder(d = steeringJointOuterDiameter, h = steeringJointWidth, center = true);
+        
+        // shape basic joint
+        cylinder(d = steeringJointInnerDiameter, h = steeringJointWidth+1, center = true);
+        
+        // hole steering knuckle pins
+        holeDiameter = steeringJointWidth-1;
+        holeDepth = steeringJointOuterDiameter+1;
+        rotateX(90) cylinder(d = holeDiameter, h = holeDepth, center = true);
+        
+        // remove unused material
+        translateX(holeDepth/2) cube(holeDepth, center = true);
+      }
       
-      cylinder(d = 14, h = 7, center = true);
-      
-      rotateX(90) cylinder(d = 5, h = 21, center = true);
-      
-      translateX(11) cube(22, center = true);
+      difference()
+      {
+        // rounding
+        cylinder(d = steeringJointWidth, h = steeringJointOuterDiameter, center = true);
+        
+        // remove unuse material
+        cylinder(d = steeringJointWidth+1, h = steeringKnuckleSize, center = true);
+        
+        // hole steering knuckle pins
+        holeDiameter = steeringPinDiameter + 0.5;
+        holeDepth = steeringJointOuterDiameter+1;
+        cylinder(d = holeDiameter, h = holeDepth, center = true);
+      }
     }
     
     difference()
     {
-      cylinder(d = 6, h = 20, center = true);
-      cylinder(d = 7, h = 13, center = true);
-      cylinder(d = 3.5, h = 21, center = true);
+      axleMountOffset = axleMountDistance/2;
+      axleMountHeight = 2*axleBeamThickness;
+      
+      union()
+      {
+        // front axle beam
+        minimalWidth = steeringJointWidth / (2*cos(caster));
+        scaleFactor = 1 - axleBeamThickness * tan(caster) / minimalWidth;
+        length = length/2
+          - sqrt((steeringJointOuterDiameter/2)^2 - (axleBeamThickness/cos(caster))^2);
+        reductionOffset = length - 2*(axleBeamWidth-minimalWidth);
+        mirrorCopyZ() linear_extrude(axleBeamThickness, scale = [1,scaleFactor]) mirrorCopyX()
+          polygon([
+            [length,minimalWidth],
+            [0,axleBeamWidth],
+            [0,-axleBeamWidth],
+            [reductionOffset,-axleBeamWidth],
+            [length,-minimalWidth]
+          ]);
+        
+        // support to mount axle
+        axleMountSize = nutDiameter + 2*strongWall;
+        mirrorCopyX() translate([axleMountOffset,-thinWall,0])
+          cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
+      }
+      
+      // holes to mount axle
+      mirrorCopyX() translate([axleMountOffset,-thinWall,0])
+      {
+        // hole for screws
+        screwHole = screwDiameter + 0.2;
+        cylinder(d = screwHole, h = axleMountHeight+1, center = true);
+      
+        // hole for nuts
+        nutHole = nutDiameter + 0.2;
+        nutHoleDepth = nutWidth + 0.2;
+        axleMountNutHoleDepth = nutHoleDepth + 1;
+        translateZ(-axleBeamThickness-1) cylinder(d = nutHole, h = axleMountNutHoleDepth, $fn = 6);
+      }
     }
   }
-  
-  mirrorCopyZ() linear_extrude(4, scale = [1,0.75]) mirrorCopyX()
-    polygon([[length/2-8,3.05],[0,5],[0,-5],[length/2-12,-5],[length/2-8,-3.05]]);
 }
 
 // doubled steering knuckle
@@ -216,13 +292,12 @@ module bearingHousing()
     union()
     {
       // basic housing
-      housingDiameter = bearingOuterDiameter + 2*strongWall;
       housingWidth = bearingWidth/2 + thinWall;
-      cylinder(d = housingDiameter, h = housingWidth);
+      cylinder(d = bearingHousingDiameter, h = housingWidth);
       
       // steering pin support
       pinSupportDiameter = steeringPinDiameter + 2*thinWall;
-      pinSupportLength = housingDiameter + thinWall;
+      pinSupportLength = bearingHousingDiameter + thinWall;
       rotateY(90) cylinder(d = pinSupportDiameter, h = pinSupportLength, center = true);
       
       // steering pins

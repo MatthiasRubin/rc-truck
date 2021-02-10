@@ -2,19 +2,19 @@
 
 
 // used modules
-use <copy.scad>
-use <transform.scad>
-use <gears.scad>
+use <../../modules/copy.scad>
+use <../../modules/transform.scad>
+use <../../modules/gears.scad>
 
 
 // used parts
-use <wheel.scad>
+use <../wheel/wheel.scad>
 
 
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 330;
+$vpd = 300;
 
 
 // local definitions

@@ -264,15 +264,16 @@ module steeringKnuckle(steeringOffset)
   {
     steeringArmThickness = 2*thinWall;
     
-    union()
+    translateX(-0.2) union()
     {
       // steering arm
       steeringArmLength = steeringKnuckleSize - bearingOuterDiameter/2;
-      steeringArmWidth = bearingWidth/2 + thinWall;
+      steeringArmWidth = bearingWidth/2 + thinWall + 0.2;
       translate([0,bearingOuterDiameter/2,-steeringArmThickness/2]) 
         cube([steeringArmWidth,steeringArmLength,steeringArmThickness]);
       
       // steering rod joint
+      steeringOffset = steeringOffset+0.2;
       translate([steeringOffset,steeringKnuckleSize,0]) 
         cylinder(r = steeringOffset, h = steeringArmThickness, center = true);
     }
@@ -292,8 +293,8 @@ module bearingHousing()
     union()
     {
       // basic housing
-      housingWidth = bearingWidth/2 + thinWall;
-      cylinder(d = bearingHousingDiameter, h = housingWidth);
+      housingWidth = bearingWidth + 2*thinWall;
+      cylinder(d = bearingHousingDiameter, h = housingWidth, center = true);
       
       // steering pin support
       pinSupportDiameter = steeringPinDiameter + 2*thinWall;
@@ -310,12 +311,13 @@ module bearingHousing()
     
     // hole for shaft
     shaftHoleDiameter = bearingOuterDiameter - thinWall;
-    shaftHoleDepth = bearingWidth + 2*thinWall + 1;
-    cylinder(d = shaftHoleDiameter, h = shaftHoleDepth, center = true);
+    shaftHoleDepth = bearingWidth/2 + thinWall + 0.1;
+    cylinder(d1 = bearingOuterDiameter, d2 = shaftHoleDiameter, h = shaftHoleDepth);
     
     // flat bottom
     boxSize = 2*shaftHoleDiameter + 4*strongWall;
-    translateZ(-boxSize/2) cube(boxSize, center = true);
+    boxOffset = boxSize/2 + 0.2;
+    translateZ(-boxOffset) cube(boxSize, center = true);
   }
 }
 
@@ -410,12 +412,12 @@ module wheelHub()
       translateZ(wheelHubOffset) cylinder(d = wheelHubDiameter, h = strongWall);
       
       // shaft mount
-      shaftMountDiameter = getRimHoleDiameter() - 0.3;
+      shaftMountDiameter = getRimHoleDiameter() - 0.5;
       shaftMountLength = wheelHubDepth - wheelHubEndStopLength;
       cylinder(d = shaftMountDiameter, h = shaftMountLength);
     
       // end stop
-      endStopDiameter = shaftDiameter + 2*thinWall;
+      endStopDiameter = shaftDiameter + 2*thinWall + 0.5;
       translateZ(-wheelHubEndStopLength) cylinder(d = endStopDiameter, h = wheelHubEndStopLength);
     }
     
@@ -444,7 +446,7 @@ module wheelHub()
 module wheelHubLatch()
 {
   latchLength = getRimHoleDiameter() - 0.6;
-  latchSize = wheelHubLatchSize - 0.6;
+  latchSize = wheelHubLatchSize - 0.8;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
     cube([latchSize,latchThickness,latchLength], center = true);

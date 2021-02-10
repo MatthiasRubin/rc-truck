@@ -2,13 +2,13 @@
 
 
 // used modules
-use <copy.scad>
-use <transform.scad>
+use <../modules/copy.scad>
+use <../modules/transform.scad>
 
 
 // used parts
 use <servo.scad>
-use <frontAxle.scad>
+use <frontAxle/frontAxle.scad>
 
 
 // global definitions

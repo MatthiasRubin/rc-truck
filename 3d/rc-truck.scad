@@ -2,7 +2,7 @@
 
 
 // used parts
-use <chassis.scad>
+use <parts/chassis.scad>
 
 
 // shows truck

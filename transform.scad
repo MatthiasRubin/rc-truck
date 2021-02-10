@@ -56,7 +56,7 @@ module rotateZ(z)
 // x: scaling in x-direction
 module scaleX(x)
 {
-  rotate([x,0,0]) children();
+  scale([x,0,0]) children();
 }
 
 // this function scales his children in y-direction
@@ -64,7 +64,7 @@ module scaleX(x)
 // y: scaling in y-direction
 module scaleY(y)
 {
-  rotate([0,y,0]) children();
+  scale([0,y,0]) children();
 }
 
 // this function scales his children in z-direction
@@ -72,32 +72,26 @@ module scaleY(y)
 // z: scaling in z-direction
 module scaleZ(z)
 {
-  rotate([0,0,z]) children();
+  scale([0,0,z]) children();
 }
 
 
 // this function mirrors his children in x-direction
-
-// x: mirroring in x-direction
-module mirrorX(x)
+module mirrorX()
 {
-  rotate([x,0,0]) children();
+  mirror([1,0,0]) children();
 }
 
 // this function mirrors his children in y-direction
-
-// y: mirroring in y-direction
-module mirrorY(y)
+module mirrorY()
 {
-  rotate([0,y,0]) children();
+  mirror([0,1,0]) children();
 }
 
 // this function mirrors his children in z-direction
-
-// z: mirroring in z-direction
-module mirrorZ(z)
+module mirrorZ()
 {
-  rotate([0,0,z]) children();
+  mirror([0,0,1]) children();
 }
 
 

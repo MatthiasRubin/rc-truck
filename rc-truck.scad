@@ -26,14 +26,14 @@ module truck()
 // cargo box
 module cargoBox()
 {
-  cube([150,340,150], center = true);
+  cube([140,340,150], center = true);
 }
 
 
 // driver cabin
 module cabin()
 {
-  translate([0,50,50]) cube([150,100,100], center = true);
-  translate([0,15,-15]) cube([150,30,30], center = true);
+  translate([0,50,50]) cube([140,100,100], center = true);
+  translate([0,15,-15]) cube([140,30,30], center = true);
 }
 

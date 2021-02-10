@@ -646,42 +646,6 @@ module wheelHubLatch()
 }
 
 
-// wheel clip
-module wheelClip()
-{
-  rotateY(90) translateZ(getRimThickness())
-  {
-    clipHoleDiameter = getRimHoleDiameter() - 0.5;
-    difference()
-    {
-      // basic clip
-      clipDiameter = clipHoleDiameter + strongWall;
-      clipHeight = 2*thinWall;
-      cylinder(d = clipDiameter, h = clipHeight);
-      
-      // hollow clip
-      clipHoleDepth = 2*clipHeight+1;
-      cylinder(d = clipHoleDiameter, h = clipHoleDepth, center = true);
-      
-      // clip gap
-      clipGapOffset = clipDiameter/2;
-      translateY(-clipGapOffset) 
-        cube([strongWall,clipDiameter,clipHoleDepth], center = true);
-    }
-    
-    // clip pins
-    clipPinHeight = strongWall - 0.2;
-    clipPinDepth = strongWall;
-    clipPinWidth = 2*thinWall;
-    clipPinOffsetY = clipHoleDiameter/2 - clipPinDepth/2 + 0.2;
-    clipPinOffsetZ = clipPinHeight/2;
-    rotationAngle = 120 * getRimHoleDiameter() / clipHoleDiameter;
-    rotateCopyZ(rotationAngle,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
-      cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);
-  }
-}
-
-
 // input gear
 module inputGear()
 {

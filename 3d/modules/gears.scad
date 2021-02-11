@@ -17,9 +17,6 @@ $fs = 0.5;
 // distance between teeth and edge
 phase = 0.2;
 
-// pi
-pi = 3.14159;
-
 
 // shows two spur gears
 gear(12, hole = 4, holeFaces = 4);
@@ -117,7 +114,7 @@ module gear(n, m = 1, h = 5, coneAngle = 0, hole = 0, holeFaces = 50)
 // m: gear module (size of teeth)
 function getOuterGearDiameter(n, m = 1) = 
   let (factor = (m < 1) ? 1.1 : 1)
-    m * (n + (7/3) * factor);
+  m * (n + (7/3) * factor);
 
 
 // get inner diameter of a spur gear
@@ -152,7 +149,7 @@ function getConeAngle(n1, n2) =
 // coneAngle: cone angle
 // m: gear module (size of teeth)
 function getBevelGearOffset(n, coneAngle = 45, m = 1) = 
-  phase + m * n * cos(coneAngle - ((420*sin(coneAngle)) / (pi*n))) / (2*sin(coneAngle));
+  phase + m * n * cos(coneAngle - ((420*sin(coneAngle)) / (PI*n))) / (2*sin(coneAngle));
 
 
 

@@ -61,6 +61,7 @@ nutWidth = 2.4;
 
 // axle mount
 axleMountDistance = 40;
+axleMountSize = nutDiameter + 2*strongWall;
 
 
 // shows front axle
@@ -224,7 +225,6 @@ module basicAxleBeam(length)
           ]);
         
         // support to mount axle
-        axleMountSize = nutDiameter + 2*strongWall;
         mirrorCopyX() translate([axleMountOffset,-thinWall,0])
           cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
       }
@@ -467,7 +467,12 @@ module bearing()
 }
 
 
+// get front axle connection offset
+function getFrontAxleConnectioOffset() = axleMountDistance/2;
 
+
+// get front axle mount size
+function getFrontAxleMountSize() = axleMountSize;
 
 
 

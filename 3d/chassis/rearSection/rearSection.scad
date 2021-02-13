@@ -14,7 +14,21 @@ use <rearAxle/rearAxle.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 280;
+$vpd = 400;
+
+
+// local definitions
+
+// frame
+frameLength = 80;
+
+
+// axle mount
+axleMountThickness = 3;
+
+// screws
+screwHoleDiameter = 3.2;
+screwHeadDiameter = 5.5;
 
 
 // shows rear section
@@ -22,37 +36,72 @@ rearSection();
 
 
 // assembled rear section
-module rearSection()
+module rearSection(frameHeight = 55)
 {
-  // frame 
-  axleMountFrame();
-  
-  // axle
-  rearAxle();
+  translateZ(getRearAxleHeigth())
+  {
+    // frame 
+    axleMountFrame(frameHeight);
+    
+    // axle
+    rearAxle();
+  }
 }
 
 
-// 
-module axleMountFrame()
+// axle mount frame
+module axleMountFrame(frameHeight)
 {
-  translateZ(15) 
+  // mount frame
+  mountFrameHeight = frameHeight - getRearAxleHeigth();
+  
+  // axle mount
+  axleMountHeight = mountFrameHeight - getFrameHeight()/2;
+  axleMountSizeBottom = getRearAxleMountSize();
+  axleMountSizeTop = 2*axleMountHeight + axleMountSizeBottom;
+  
+  // axle mount hole
+  axleMountHoleHeight = axleMountHeight - axleMountThickness+0.01;
+  axleMountHoleSizeTop = 2*axleMountHoleHeight + screwHeadDiameter;
+  
+  mirrorCopyX() difference()
+  {
+    // basic axle mount
+    scaleFactor = axleMountSizeTop/axleMountSizeBottom;
+    axleMountOffset = getRearAxleConnectioOffset();
+    linear_extrude(axleMountHeight, scale = [1,scaleFactor]) translateX(axleMountOffset) 
+      square(axleMountSizeBottom, center = true);
+    
+    // hollow axle mount
+    scaleFactorHole = axleMountHoleSizeTop/screwHeadDiameter;
+    axleMountHoleOffset = axleMountOffset - (axleMountSizeBottom - screwHeadDiameter)/2;
+    translate([axleMountHoleOffset,0,axleMountThickness]) 
+      linear_extrude(axleMountHoleHeight, scale = [1,scaleFactorHole])
+        square([axleMountSizeBottom,screwHeadDiameter], center = true);
+    
+    // hole to mount axle
+    holeDepth = 2*axleMountThickness+1;
+    translateX(axleMountOffset) cylinder(d = screwHoleDiameter, h = holeDepth, center = true);
+  }
+  
+  translateZ(mountFrameHeight) 
   {
     difference()
     {
-      rotateX(180) frame(80);
-      rotateY(90) cylinder(d = 3.5, h = 51, center = true);
+      // basic frame
+      rotateX(180) frame(frameLength);
+      
+      // central mounting hole
+      holeDepth = getFrameWidth() + 1;
+      rotateY(90) cylinder(d = screwHoleDiameter, h = holeDepth, center = true);
     }
   
-    mirrorCopyY() translateY(11.5) cube([42,4.5,10], center = true);
-  }
-    
-  mirrorCopyX() difference()
-  {
-    linear_extrude(10, scale = [1,3]) translateX(20) square(9, center = true);
-    
-    translateZ(3) linear_extrude(10, scale = [1,4]) translateX(18.5) square([9,6], center = true);
-    
-    translateX(20) cylinder(d = 3.3, h = 7, center = true);
+    // axle mount support
+    supportOffset = (axleMountSizeTop + axleMountHoleSizeTop)/4;
+    supportThickness = (axleMountSizeTop - axleMountHoleSizeTop)/2;
+    supportLength = getFrameWidth() - 2*getFrameThickness();
+    mirrorCopyY() translateY(supportOffset) 
+      cube([supportLength,supportThickness,getFrameHeight()], center = true);
   }
 }
 

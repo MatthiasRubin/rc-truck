@@ -213,20 +213,29 @@ module wheelClip()
 }
 
 
+// get total wheel diameter
+function getWheelDiameter() = wheelDiameter;
+
+
 // get total wheel width
 function getWheelWidth() = wheelWidth + wheelMountOffset;
+
 
 // get total rim thickness
 function getRimThickness() = rimThickness;
 
+
 // get pitch hole diameter
 function getPitchCircleDiameter() = pitchCircleDiameter;
+
 
 // get number of wheel screws
 function getNumberOfWheelScrews() = numberOfScrews;
 
+
 // get wheel screw hole diameter
 function getWheelScrewDiameter() = screwHoleDiameter;
+
 
 // get rim hole diameter
 function getRimHoleDiameter() = rimHoleDiameter;

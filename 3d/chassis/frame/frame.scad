@@ -80,3 +80,23 @@ module frame(length)
     translateCopyY(frameOffset,numberOfSections-1, center = true) frame(sectionLength);
   }
 }
+
+
+// get frame width
+function getFrameWidth() = frameWidth;
+
+
+// get frame height
+function getFrameHeight() = frameHeight;
+
+
+// get frame thickness
+function getFrameThickness() = frameThickness;
+
+
+
+
+
+
+
+

@@ -735,3 +735,15 @@ module outputBearing()
   }
 }
 
+
+// get rear axle heigth
+function getRearAxleHeigth() = axleMountHeight + getWheelDiameter()/2;
+
+
+// get rear axle connection offset
+function getRearAxleConnectioOffset() = axleMountDistance/2;
+
+
+// get rear axle mount size
+function getRearAxleMountSize() = axleMountSize;
+

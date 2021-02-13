@@ -74,7 +74,7 @@ module translateCopy(v = [0,0,0], n = 1, center = false)
   {
     if (center) 
     {
-      translate(i*v + start) children();
+      translate(i*v + translationOffset) children();
     }
     else 
     {
@@ -166,7 +166,7 @@ module linearGrid(v = [0,0,0], size = [1,1,1], center = [false,false,false])
     // expand size to 3 dimensions
     linearGrid(v, [size,size,size], center) children();
   }
-  else if (is_num(center))
+  else if (is_bool(center))
   {
     // expand center to 3 dimensions
     linearGrid(v, size, [center,center,center]) children();

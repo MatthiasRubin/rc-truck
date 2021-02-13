@@ -4,9 +4,6 @@
 // used modules
 use <../../modules/copy.scad>
 use <../../modules/transform.scad>
-
-
-// used parts
 use <../frontAxle/frontAxle.scad>
 
 

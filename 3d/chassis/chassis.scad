@@ -2,16 +2,16 @@
 
 
 // used modules
-use <../../modules/transform.scad>
+use <../modules/transform.scad>
 
 
 // used parts
-use <../frame/frame.scad>
-use <../motor.scad>
-use <../steering.scad>
-use <../driveShaft.scad>
-use <../rearSection/rearSection.scad>
-use <../frontAxle/frontAxle.scad>
+use <frontSection/motor.scad>
+use <frontSection/steering.scad>
+use <frontSection/frontAxle/frontAxle.scad>
+use <frame/frame.scad>
+use <driveShaft.scad>
+use <rearSection/rearSection.scad>
 
 
 // shows truck chassis

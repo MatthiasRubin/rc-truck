@@ -9,6 +9,7 @@ use <../../modules/transform.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
+$vpd = 350;
 
 
 // local definitions

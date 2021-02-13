@@ -2,13 +2,13 @@
 
 
 // used modules
-use <../../modules/copy.scad>
-use <../../modules/transform.scad>
-use <../../modules/gears.scad>
+use <../../../modules/copy.scad>
+use <../../../modules/transform.scad>
+use <../../../modules/gears.scad>
 
 
 // used parts
-use <../wheel/wheel.scad>
+use <../../wheel/wheel.scad>
 
 
 // global definitions

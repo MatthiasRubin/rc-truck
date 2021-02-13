@@ -2,8 +2,8 @@
 
 
 // used modules
-use <../modules/copy.scad>
-use <../modules/transform.scad>
+use <../../modules/copy.scad>
+use <../../modules/transform.scad>
 
 
 // used parts

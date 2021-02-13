@@ -8,7 +8,7 @@ use <../../modules/copy.scad>
 
 // used parts
 use <../frame/frame.scad>
-use <../rearAxle/rearAxle.scad>
+use <rearAxle/rearAxle.scad>
 
 
 // global definitions

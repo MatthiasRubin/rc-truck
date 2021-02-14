@@ -471,6 +471,9 @@ module bearing()
 function getFrontAxleConnectioOffset() = axleMountDistance/2;
 
 
+function getFrontAxleHeigth() = axleBeamThickness + getWheelDiameter()/2;;
+
+
 // get front axle mount size
 function getFrontAxleMountSize() = axleMountSize;
 

@@ -6,12 +6,10 @@ use <../modules/transform.scad>
 
 
 // used parts
-use <frontSection/motor.scad>
-use <frontSection/steering.scad>
-use <frontSection/frontAxle/frontAxle.scad>
+use <frontSection/frontSection.scad>
+use <rearSection/rearSection.scad>
 use <frame/frame.scad>
 use <driveShaft.scad>
-use <rearSection/rearSection.scad>
 
 
 // shows truck chassis
@@ -22,42 +20,27 @@ chassis();
 module chassis()
 {
   // front section
-  //translateY(125) frontSection();
+  translateY(-125) frontSection();
   
   // middle section
+  frameOffset = (100-80)/4;
+  translateY(frameOffset) middleSection();
   
   // rear section
   translateY(125) rearSection();
   
-  
-  
-  
-  // frame 
-  //frame();
-  
-  // motor
-  //translate([0,-38,25]) motor();
-  
-  // steering
-  //translateY(-125) steering();
-  
-  // drive shaft
-  //translate([0,43.9,-4.05]) driveShaft();
-  
   // battery
-  //translate([0,-115,70]) rotateX(90) cube([50,56,29], center = true);
-  
-  // axles
-  //translateY(-125) frontAxle();
-  
-  
-  
-  
+  //translate([0,-110,110]) cube([56,29,50], center = true);
 }
 
 
-
-
+// middle section
+module middleSection()
+{
+  // frame 
+  frameLength = 250-(100+80)/2;
+  translateZ(55) frame(frameLength);
+}
 
 
 

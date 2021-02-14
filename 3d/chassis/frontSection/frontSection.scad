@@ -15,7 +15,6 @@ use <frontAxle/frontAxle.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 440;
 
 
 // local definitions

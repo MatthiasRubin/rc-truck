@@ -10,7 +10,6 @@ use <../frontAxle/frontAxle.scad>
 // global definitions
 $fa = 2;
 $fs = 0.5;
-$vpd = 280;
 
 
 // local definitions

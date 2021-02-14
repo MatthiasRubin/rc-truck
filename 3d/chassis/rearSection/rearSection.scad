@@ -14,7 +14,6 @@ use <rearAxle/rearAxle.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 400;
 
 
 // local definitions

@@ -13,7 +13,6 @@ use <../../wheel/wheel.scad>
 // global definitions
 $fa = 5;
 $fs = 0.5;
-$vpd = 280;
 
 
 // local definitions

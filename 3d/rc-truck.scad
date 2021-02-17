@@ -1,6 +1,10 @@
 // this file defines the fully assembled truck
 
 
+// used modules
+use <modules/transform.scad>
+
+
 // used parts
 use <chassis/chassis.scad>
 
@@ -16,24 +20,28 @@ module truck()
   chassis();
   
   // cabin in front
-  translate([0,-205,60]) %cabin();
+  translate([0,-190,65]) %cabin();
   
   // cargo box in the back
-  translate([0,90,145]) %cargoBox();
+  translate([0,80,135]) %cargoBox();
 }
 
 
 // cargo box
 module cargoBox()
 {
-  cube([140,330,165], center = true);
+  cube([130,350,140], center = true);
 }
 
 
 // driver cabin
 module cabin()
 {
-  translate([0,57.5,60]) cube([140,115,120], center = true);
-  translate([0,20,-20]) cube([140,40,40], center = true);
+  difference()
+  {
+    translate([0,45,45]) cube([125,90,90], center = true);
+    translate([-65,0,35]) rotateX(75) cube([130,90,90]);
+  }
+  translate([0,15,-18]) cube([125,30,36], center = true);
 }
 

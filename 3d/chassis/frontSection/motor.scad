@@ -22,7 +22,7 @@ module motor()
   translateZ(-31.8) motorDummy();
   
   // motor mount
-  rotateCopyZ(180) motorMount();
+  //rotateCopyZ(180) motorMount();
 }
 
 

@@ -17,7 +17,6 @@ $fs = 0.5;
 frameThickness = 4;
 frameHeight = 10;
 frameWidth = 50;
-maxSectionLength = 80;
 
 // frame support
 supportThickness = 1;
@@ -33,7 +32,7 @@ frame(150);
 
 
 // truck frame part
-module frame(length)
+module frame(length, maxSectionLength = 80)
 {
   if (length <= maxSectionLength)
   {

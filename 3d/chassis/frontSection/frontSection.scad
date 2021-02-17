@@ -10,6 +10,8 @@ use <../../modules/copy.scad>
 use <../frame/frame.scad>
 use <suspension/suspension.scad>
 use <frontAxle/frontAxle.scad>
+use <motor.scad>
+use <servo.scad>
 
 
 // global definitions
@@ -46,7 +48,13 @@ module frontSection(frameHeight = 55)
     suspension();
     
     // axle
-    frontAxle();
+    //frontAxle();
+    
+    translate([-7,-20,40]) motor();
+    translate([11,-20,18]) rotateX(180) servo();
+    
+    // battery
+    translate([0,10,51]) cube([56,29,50], center = true);
   }
 }
 
@@ -56,7 +64,7 @@ module axleMountFrame(frameHeight)
 {
   // basic frame
   frameOffset = frameHeight - getFrontAxleHeigth();
-  translateZ(frameOffset) rotateX(180) frame(frameLength);
+  translateZ(frameOffset) rotateX(180) frame(frameLength, frameLength);
   
   // suspension mount
   mirrorCopyX() difference()

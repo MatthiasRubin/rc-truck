@@ -28,9 +28,6 @@ module chassis()
   
   // rear section
   translateY(125) rearSection();
-  
-  // battery
-  //translate([0,-110,110]) cube([56,29,50], center = true);
 }
 
 

@@ -11,72 +11,89 @@ $fa = 5;
 $fs = 0.5;
 
 
+// local definitions
+
+// motor
+motorLength = 28;
+motorOffset = 0.7;
+
+// motor fixing
+fixingSize = [5,22.5,3];
+fixingOffset = 43;
+
+// gear box
+gearBoxSize = [22.5,18.8,37];
+gearBoxKnopOffset = 22.5;
+gearBoxKnopDiameter = 4;
+gearBoxKnopSize = 2;
+
+// motor mount
+mountSize = [5,3,10];
+mountHole = 3;
+mountHoleOffset = 31.5;
+mountHoleDistance = 17.5;
+
+// shaft
+shaftOffset = 11.2;
+shaftDiameter = 5.3;
+shaftLength = 36.3;
+shaftPhaseSize = 3.7;
+
+
 // shows motor
 motor();
 
 
-// assembled motor
+// motor
 module motor()
 {
-  // motor dummy
-  translateZ(-31.8) motorDummy();
-  
-  // motor mount
-  //rotateCopyZ(180) motorMount();
-}
-
-
-// motor mount
-module motorMount()
-{
-  translateY(15.5) difference()
-  {
-    // basic motor mount
-    cube([30,12,10], center = true);
-    
-    // shape motor mount
-    translateY(3.5) cube([24,10,11], center = true);
-    
-    // holes to attach motor mount to frame
-    translateY(2.5) rotateY(90) cylinder(d = 3.2, h = 35, center = true);
-    
-    // holes to attach motor
-    mirrorCopyX() translate([17.5/2,-2.7,0]) rotateX(90) cylinder(d = 6, h = 10);
-  }
-}
-
-
-// motor dummy
-module motorDummy()
-{
-  difference()
+  translateZ(-shaftOffset) difference()
   {
     union()
     {
       // motor
-      difference()
+      translate([0,motorOffset,gearBoxSize[2]]) difference()
       {
-        translateZ(20) cylinder(d = 22.5, h = 44.2);
-        mirrorCopyY() translate([0,34,42]) cube(50, center = true);
+        // basic motor
+        cylinder(d = gearBoxSize[0], h = motorLength);
+        
+        // flat motor
+        boxSize = motorLength+1;
+        flatOffset = boxSize/2 + gearBoxSize[1]/2 - motorOffset;
+        mirrorCopyY() translate([0,flatOffset,motorLength/2]) cube(boxSize, true);
       }
       
+      // motor fixing
+      translate([0,motorOffset,fixingOffset]) cube(fixingSize, true);
+      
       // gear box
-      translateZ(18.5) cube([22.5,18.8,37], center = true);
+      translateZ(gearBoxSize[2]/2) cube(gearBoxSize, true);
+      
+      // gear box knop
+      translateZ(gearBoxKnopOffset) rotateX(90) 
+        cylinder(d = gearBoxKnopDiameter , h = gearBoxSize[1]/2 + gearBoxKnopSize);
+      
+      // motor mount
+      cube(mountSize, true);
       
       // basic motor shaft
-      translateZ(11.2) rotateX(90) cylinder(d = 7.2, h = 37.6, center = true);
+      translateZ(shaftOffset) rotateX(90) cylinder(d = shaftDiameter, h = shaftLength, center = true);
     }
     
-    // holes to mount motor
-    mirrorCopyX() translate([17.5/2,0,31.8]) rotateX(90) 
-      cylinder(d = 3, h = 20, center = true);
+    // top holes to mount motor
+    mirrorCopyX() translate([mountHoleDistance/2,0,mountHoleOffset]) rotateX(90) 
+      cylinder(d = mountHole, h = gearBoxSize[1]+1, center = true);
+    
+    // bottom hole to mount motor
+    translateZ(-mountSize[2]/4) rotateX(90) 
+      cylinder(d = mountHole, h = mountSize[1]+1, center = true);
     
     // shaft phase
-    mirrorCopyY() translateY(15.7)
-    {
-      translateZ(4.9) cube(10, center = true);
-      translateZ(18.5) cube(10, center = true);
-    }
+    boxLength = shaftLength - gearBoxSize[1];
+    phaseOffset = gearBoxSize[1]/2 + 0.8 + boxLength/2;
+    boxOffset = (shaftDiameter + shaftPhaseSize)/2;
+    mirrorCopyY() translate([0,phaseOffset,shaftOffset]) mirrorCopyZ()
+      translateZ(boxOffset) cube([shaftDiameter,boxLength,shaftDiameter], true);
     
   }
 }

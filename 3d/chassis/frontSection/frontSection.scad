@@ -48,14 +48,15 @@ module frontSection(frameHeight = 55)
     suspension();
     
     // axle
-    //frontAxle();
-    
-    translate([-7,-20,40]) motor();
-    translate([11,-20,18]) rotateX(180) servo();
-    
-    // battery
-    translate([0,10,51]) cube([56,29,50], center = true);
+    frontAxle();
   }
+  
+    
+  translate([-7,-16.8,50]) rotateZ(180) motor();
+  translate([11,-20,53]) rotateX(180) servo();
+  
+  // battery
+  translate([0,9.3,85]) cube([56,29,50], center = true);
 }
 
 
@@ -64,7 +65,7 @@ module axleMountFrame(frameHeight)
 {
   // basic frame
   frameOffset = frameHeight - getFrontAxleHeigth();
-  translateZ(frameOffset) rotateX(180) frame(frameLength, frameLength);
+  translateZ(frameOffset) rotateX(180) frame(frameLength, false);
   
   // suspension mount
   mirrorCopyX() difference()

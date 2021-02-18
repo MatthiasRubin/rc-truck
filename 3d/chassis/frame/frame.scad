@@ -17,6 +17,7 @@ $fs = 0.5;
 frameThickness = 4;
 frameHeight = 10;
 frameWidth = 50;
+maxSectionLength = 80;
 
 // frame support
 supportThickness = 1;
@@ -32,9 +33,9 @@ frame(150);
 
 
 // truck frame part
-module frame(length, maxSectionLength = 80)
+module frame(length, support = true)
 {
-  if (length <= maxSectionLength)
+  if (length <= maxSectionLength || support == false)
   {
     // frame is short enough
     difference()
@@ -61,11 +62,14 @@ module frame(length, maxSectionLength = 80)
       }
     }
     
-    // frame support
-    frameEdgeOffset = [frameWidth/2,-length/2,-frameHeight/2];
-    supportSize = supportSize+2*frameThickness;
-    mirrorCopyY() mirrorCopyX() translate(frameEdgeOffset) rotateY(-90) 
-      linear_extrude(supportSize, scale = [1,0]) square([supportThickness,supportSize]);
+    if (support)
+    {
+      // frame support
+      frameEdgeOffset = [frameWidth/2,-length/2,-frameHeight/2];
+      supportSize = supportSize+2*frameThickness;
+      mirrorCopyY() mirrorCopyX() translate(frameEdgeOffset) rotateY(-90) 
+        linear_extrude(supportSize, scale = [1,0]) square([supportThickness,supportSize]);
+    }
   }
   else
   {

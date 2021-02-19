@@ -2,8 +2,8 @@
 
 
 // used modules
-use <../modules/copy.scad>
-use <../modules/transform.scad>
+use <../../modules/copy.scad>
+use <../../modules/transform.scad>
 
 
 // global definitions
@@ -11,41 +11,51 @@ $fa = 5;
 $fs = 0.2;
 
 
+// local definitions
+
+
+
 // shows drive shaft
-driveShaft();
+driveShaft([10,150,20]);
 
 
 // assembled drive shaft
-module driveShaft()
+module driveShaft(length)
 {
-  h = 16.9;
-  l = 110.2;
+  x = length[0];
+  y = length[1] - 16;
+  z = length[2];
   
-  rotateX(-atan(h/l))
+  rotZ = -atan(x/y);
+  y2 = sqrt(x^2 + y^2);
+  rotX = atan(z/y2);
+  l = sqrt(y2^2 + z^2);
+  
+  rotateZ(rotZ) rotateX(rotX)
   {
     // shaft
-    shaft();
+    shaft(l);
     
     // crosses
-    rotateCopyZ(180) translateY(55.5) cross();
+    rotateCopyZ(180) translateY(l/2) rotateZ(-rotZ) cross();
   }
   
   // input yoke
-  translate([0,-l/2,h/2]) inputYoke();
+  translate(-[x/2,y/2,z/2]) inputYoke();
   
   // output yoke
-  translate([0,l/2,-h/2]) outputYoke();
+  translate([x/2,y/2,z/2]) outputYoke();
 }
 
 
 // shaft
-module shaft()
+module shaft(l)
 {
   // basic yokes
-  mirrorCopyY() translateY(55.5) rotateY(90) yoke();
+  mirrorCopyY() translateY(l/2) rotateY(90) yoke();
   
   // shaft
-  rotateX(90) cylinder(d = 8, h = 98, center = true);
+  rotateX(90) cylinder(d = 8, h = l-13, center = true);
 }
 
 

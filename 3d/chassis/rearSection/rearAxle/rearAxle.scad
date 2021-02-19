@@ -50,6 +50,9 @@ wheelHubLatchOffset = wheelScrewLength + wheelHubLatchSize/2 + 2*thinWall;
 
 // shafts
 inputShaftDiameter = inputBearingInnerDiameter - 0.1;
+inputShaftLength = 2*inputBearingWidth + thinWall + strongWall;
+inputShaftConnectionLength = inputShaftLength + 3*thinWall + strongWall + inputShaftDiameter;
+inputShaftConnectionOffset = inputGearOffset - 2*thinWall;
 outputShaftDiameter = outputBearingInnerDiameter - 0.1;
 outputShaftConnectionLenght = wheelHubLatchOffset + wheelHubLatchSize/2 + strongWall;
 
@@ -563,16 +566,13 @@ module inputShaft()
     rotateY(45) rotateX(90)
     {
       // input shaft
-      inputShaftLength = 2*inputBearingWidth + thinWall + strongWall;
       inputShaftOffset = inputBearingOffset1 - inputBearingWidth/2;
       translateZ(inputShaftOffset)
         cylinder(d = inputShaftDiameter, h = inputShaftLength);
       
       // shaft connection
-      shaftConnectionLenght = inputShaftLength + thinWall + strongWall + inputShaftDiameter;
-      inputShaftConnectionOffset = inputGearOffset - 2*thinWall;
       translateZ(inputShaftConnectionOffset)
-        cylinder(d = inputShaftDiameter, h = shaftConnectionLenght+2, $fn = 4);
+        cylinder(d = inputShaftDiameter, h = inputShaftConnectionLength, $fn = 4);
       
       // end stop
       endStopOffset = inputBearingOffset1 + inputBearingWidth/2;
@@ -745,4 +745,9 @@ function getRearAxleConnectioOffset() = axleMountDistance/2;
 
 // get rear axle mount size
 function getRearAxleMountSize() = axleMountSize;
+
+
+// get rear axle shaft offset
+function getRearAxleShaftOffset() = 
+  [0,-inputShaftConnectionLength - inputShaftConnectionOffset,-axleMountHeight];
 

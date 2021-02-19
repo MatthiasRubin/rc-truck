@@ -105,4 +105,4 @@ module axleMountFrame(frameHeight)
 }
 
 
-
+function getRearSectionShaftOffset() = [0,0,getRearAxleHeigth()] + getRearAxleShaftOffset();

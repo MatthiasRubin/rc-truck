@@ -10,7 +10,7 @@ use <../../modules/copy.scad>
 use <../frame/frame.scad>
 use <suspension/suspension.scad>
 use <frontAxle/frontAxle.scad>
-use <motor.scad>
+use <motor/motor.scad>
 use <servo.scad>
 
 
@@ -30,6 +30,9 @@ frameLength = 100;
 // screws
 screwHoleDiameter = 3.5;
 oblongHoleLenght = screwHoleDiameter + 5;
+
+// motor
+motorOffset = [-7,-16.8,50];
 
 
 // shows front section
@@ -52,7 +55,7 @@ module frontSection(frameHeight = 55)
   }
   
     
-  translate([-7,-16.8,50]) rotateZ(180) motor();
+  translate(motorOffset) rotateZ(180) motor();
   translate([11,-20,53]) rotateX(180) servo();
   
   // battery
@@ -132,4 +135,6 @@ module axleMountFrame(frameHeight)
 }
 
 
+// get motor shaft offset
+function getFrontSectionMotorShaftOffset() = motorOffset + [0,getMotorShaftOffset(),0];
 

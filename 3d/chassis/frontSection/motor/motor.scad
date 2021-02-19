@@ -2,8 +2,8 @@
 
 
 // used modules
-use <../../modules/copy.scad>
-use <../../modules/transform.scad>
+use <../../../modules/copy.scad>
+use <../../../modules/transform.scad>
 
 
 // global definitions
@@ -98,3 +98,6 @@ module motor()
   }
 }
 
+
+// get motor shaft offset
+function getMotorShaftOffset() = shaftLength/2;

@@ -9,7 +9,7 @@ use <../modules/transform.scad>
 use <frontSection/frontSection.scad>
 use <rearSection/rearSection.scad>
 use <frame/frame.scad>
-use <driveShaft.scad>
+use <driveShaft/driveShaft.scad>
  
 
 // shows truck chassis
@@ -28,6 +28,11 @@ module chassis()
   
   // rear section
   translateY(125) rearSection();
+  
+  // drive shaft
+  shaftLength = [0,250,0] - getFrontSectionMotorShaftOffset() + getRearSectionShaftOffset();
+  shaftOffset = (getFrontSectionMotorShaftOffset() + getRearSectionShaftOffset())/2;
+  translate(shaftOffset) driveShaft(shaftLength);
 }
 
 

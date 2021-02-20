@@ -99,5 +99,9 @@ module motor()
 }
 
 
+// get motor size
+function getMotorSize() = gearBoxSize + [0,0,motorLength];
+
+
 // get motor shaft offset
 function getMotorShaftOffset() = shaftLength/2;

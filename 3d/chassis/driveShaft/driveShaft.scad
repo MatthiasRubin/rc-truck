@@ -13,6 +13,21 @@ $fs = 0.2;
 
 // local definitions
 
+// shaft
+inputShaftDiameter = 5;
+shaftConnectionLength = inputShaftDiameter;
+relativeTorque = PI/12*inputShaftDiameter^3;
+shaftDiameter = (24/PI*relativeTorque)^(1/3);
+
+// cross
+pinDiameter = 2;
+crossSize = 4/PI*relativeTorque/pinDiameter^2;
+
+// yoke
+yokeThickness = ceil(2*relativeTorque/shaftDiameter^2)/2;
+yokeInnerDiameter = crossSize + 0.2;
+yokeOuterDiameter = yokeInnerDiameter + 2*yokeThickness;
+pinOffset = yokeOuterDiameter/2 + pinDiameter/2;
 
 
 // shows drive shaft
@@ -20,78 +35,60 @@ driveShaft([10,150,20]);
 
 
 // assembled drive shaft
-module driveShaft(length)
+module driveShaft(v)
 {
-  x = length[0];
-  y = length[1] - 16;
-  z = length[2];
+  x = v[0];
+  y = v[1] - pinOffset;
+  z = v[2];
   
   rotZ = -atan(x/y);
   y2 = sqrt(x^2 + y^2);
   rotX = atan(z/y2);
-  l = sqrt(y2^2 + z^2);
+  length = sqrt(y2^2 + z^2);
   
   rotateZ(rotZ) rotateX(rotX)
   {
     // shaft
-    shaft(l);
+    shaft(length);
     
     // crosses
-    rotateCopyZ(180) translateY(l/2) rotateZ(-rotZ) cross();
+    rotateCopyZ(180) translateY(length/2) rotateZ(-rotZ) cross();
   }
   
-  // input yoke
-  translate(-[x/2,y/2,z/2]) inputYoke();
-  
-  // output yoke
-  translate([x/2,y/2,z/2]) outputYoke();
+  // end yokes
+  translate(-[x/2,y/2,z/2]) endYoke();
+  translate([x/2,y/2,z/2]) rotateZ(180) endYoke();
 }
 
 
 // shaft
-module shaft(l)
+module shaft(length)
 {
   // basic yokes
-  mirrorCopyY() translateY(l/2) rotateY(90) yoke();
+  mirrorCopyY() translateY(length/2) rotateY(90) yoke();
   
   // shaft
-  rotateX(90) cylinder(d = 8, h = l-13, center = true);
-}
-
-
-// input yoke
-module inputYoke()
-{
-  // basic yoke
-  yoke();
-  
-  // input shaft
-  difference()
-  {
-    // basic shaft
-    translateY(-6) rotateX(90) cylinder(d = 8, h = 9);
-    
-    // hole for motor shaft
-    translate([0.7,-7,0.7]) rotateX(90) cylinder(d = 4*sqrt(2), h = 9, $fn = 4);
-    translate([-0.7,-7,-0.7]) rotateX(90) cylinder(d = 4*sqrt(2), h = 9, $fn = 4);
-  }
+  shaftLength = length - 2*pinOffset + 2*yokeThickness;
+  rotateX(90) cylinder(d = shaftDiameter, h = shaftLength, center = true);
 }
 
 
 // output yoke
-module outputYoke()
+module endYoke()
 {
   // basic yoke
-  rotateZ(180) yoke();
+  yoke();
   
   // output shaft
-  difference()
+  rotateX(90) translateZ(pinOffset) difference()
   {
     // basic shaft
-    translateY(6) rotateX(-90) cylinder(d = 8, h = 9);
+    shaftLength = shaftConnectionLength+yokeThickness;
+    translateZ(-yokeThickness) cylinder(d = shaftDiameter, h = shaftLength);
     
     // hole for rear axle shaft
-    translateY(7) rotateX(-90) cylinder(d = 4.2, h = 9, $fn = 4);
+    holeDiameter = inputShaftDiameter + 0.2;
+    cylinder(d = holeDiameter, h = shaftLength, $fn = 4);
   }
 }
 
@@ -100,17 +97,19 @@ module outputYoke()
 module cross()
 {
   // basic cross
+  crossThickness = 1.5*pinDiameter;
   rotateCopyY(90)
   {
-    // shaft
-    cylinder(d = 2, h = 12, center = true);
+    // pin
+    pinLength = crossSize + 2*yokeThickness;
+    cylinder(d = pinDiameter, h = pinLength, center = true);
     
-    // shaft end stop
-    cylinder(d = 3, h = 9.8, center = true);
+    // pin end stop
+    cylinder(d = crossThickness, h = crossSize, center = true);
   }
   
   // reinforcement
-  rotateX(90) cylinder(d = 9.8, h = 3, center = true);
+  rotateX(90) cylinder(d = crossSize, h = crossThickness, center = true);
 }
 
 
@@ -119,37 +118,43 @@ module yoke()
 {
   difference()
   {
-    translateY(-1)
+    translateY(-pinDiameter/2)
     {
       // basic yoke
       difference()
       {
         // basic shape
-        cylinder(d = 14, h = 8, center = true);
+        cylinder(d = yokeOuterDiameter, h = shaftDiameter, center = true);
         
         // hollow shape
-        cylinder(d = 10, h = 9, center = true);
+        cylinder(d = yokeInnerDiameter, h = shaftDiameter+1, center = true);
         
         // cut half
-        translateY(7.5) cube([15,15,10], center = true);
+        boxSize = yokeOuterDiameter+1;
+        translateY(boxSize/2) cube(boxSize, true);
       }
       
       // round end
-      mirrorCopyX() translateX(6) difference()
+      roundEndOffset = (yokeInnerDiameter + yokeThickness)/2;
+      mirrorCopyX() translateX(roundEndOffset) difference()
       {
         // basic shape
-        rotateY(90) cylinder(d = 8, h = 2, center = true);
+        rotateY(90) cylinder(d = shaftDiameter, h = yokeThickness, center = true);
         
         // cut half
-        translateY(-2.5) cube([4,5,9], center = true);
+        boxSize = shaftDiameter+1;
+        translateY(-boxSize/2) cube(boxSize, true);
       }
     }
     
-    // hole for cross
-    rotateY(90) cylinder(d = 2.3, h = 15, center = true);
+    // hole for cross pin
+    holeDiameter = pinDiameter + 0.3;
+    rotateY(90) cylinder(d = holeDiameter, h = yokeOuterDiameter+1, center = true);
     
     // phase to slide in cross
-    mirrorCopyX() translate([-5,1,-1]) rotateZ(25) cube([1,4,2.3]);
+    phaseOffset = [-yokeInnerDiameter/2,holeDiameter/2,-shaftDiameter/2];
+    phaseAngle = atan(yokeThickness / (shaftDiameter - 2*pinDiameter));
+    mirrorCopyX() translate(phaseOffset) rotateZ(phaseAngle) cube(shaftDiameter);
   }
 }
 

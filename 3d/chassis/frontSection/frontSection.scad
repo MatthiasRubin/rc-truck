@@ -11,7 +11,7 @@ use <../frame/frame.scad>
 use <suspension/suspension.scad>
 use <frontAxle/frontAxle.scad>
 use <motor/motor.scad>
-use <servo.scad>
+use <servo/servo.scad>
 
 
 // global definitions
@@ -59,7 +59,7 @@ module frontSection(frameHeight = 55)
   translate([11,-20,53]) rotateX(180) servo();
   
   // battery
-  translate([0,9.3,85]) cube([56,29,50], center = true);
+  //translate([0,9.3,85]) cube([56,29,50], center = true);
 }
 
 

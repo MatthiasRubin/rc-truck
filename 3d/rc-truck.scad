@@ -30,7 +30,7 @@ module truck()
 // cargo box
 module cargoBox()
 {
-  cube([130,350,140], center = true);
+  cube([130,350,140], true);
 }
 
 
@@ -39,9 +39,9 @@ module cabin()
 {
   difference()
   {
-    translate([0,45,45]) cube([125,90,90], center = true);
+    translate([0,45,45]) cube([125,90,90], true);
     translate([-65,0,35]) rotateX(75) cube([130,90,90]);
   }
-  translate([0,15,-18]) cube([125,30,36], center = true);
+  translate([0,15,-18]) cube([125,30,36], true);
 }
 

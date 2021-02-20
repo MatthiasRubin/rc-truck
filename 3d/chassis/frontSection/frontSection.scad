@@ -10,8 +10,8 @@ use <../../modules/copy.scad>
 use <../frame/frame.scad>
 use <suspension/suspension.scad>
 use <frontAxle/frontAxle.scad>
-use <motor/motor.scad>
-use <servo/servo.scad>
+use <dummies/motor.scad>
+use <dummies/servo.scad>
 
 
 // global definitions
@@ -40,6 +40,8 @@ frontSection();
 
 
 // assembled front section
+
+// frameHeight: height of frame center
 module frontSection(frameHeight = 55)
 {
   translateZ(getFrontAxleHeigth())
@@ -54,16 +56,20 @@ module frontSection(frameHeight = 55)
     frontAxle();
   }
   
-    
+  // motor
   translate(motorOffset) rotateZ(180) motor();
+  
+  // servo
   translate([11,-20,53]) rotateX(180) servo();
   
   // battery
-  //translate([0,9.3,85]) cube([56,29,50], center = true);
+  translate([0,9.3,85]) cube([56,29,50], true);
 }
 
 
 // axle mount frame
+
+// frameHeight: height of frame center
 module axleMountFrame(frameHeight)
 {
   // basic frame
@@ -85,7 +91,7 @@ module axleMountFrame(frameHeight)
       mountWidth = 2*suspensionWidth;
       mountLenght = screwHoleDiameter + 2*strongWall;
       mountPosition = suspensionPosition + [0,0,mountHeight/2];
-      translate(mountPosition) cube([mountWidth,mountLenght,mountHeight], center = true);
+      translate(mountPosition) cube([mountWidth,mountLenght,mountHeight], true);
       
       // rounding
       translate(suspensionPosition) rotateY(90) 
@@ -95,7 +101,7 @@ module axleMountFrame(frameHeight)
       {
         // long mount
         longMountLength = oblongHoleLenght + 2*strongWall;;
-        translate(mountPosition) cube([mountWidth,longMountLength,mountHeight], center = true);
+        translate(mountPosition) cube([mountWidth,longMountLength,mountHeight], true);
       
         // rounding
         translate(suspensionPosition) rotateY(90)
@@ -105,7 +111,7 @@ module axleMountFrame(frameHeight)
             cylinder(d = mountLenght, h = mountWidth, center = true);
           
           // center part
-          cube([mountLenght,oblongHoleShortLength,mountWidth], center = true);
+          cube([mountLenght,oblongHoleShortLength,mountWidth], true);
         }
       }
     }
@@ -114,7 +120,7 @@ module axleMountFrame(frameHeight)
     boxHeight = 2*suspensionOffset - getFrameHeight();
     boxWidth = suspensionWidth+1;
     boxPosition = [suspensionPosition[0]+boxWidth/2,0,suspensionPosition[2]];
-    translate(boxPosition) cube([boxWidth,frameLength,boxHeight], center = true);
+    translate(boxPosition) cube([boxWidth,frameLength,boxHeight], true);
     
     // hole to fix suspension
     holeDepth = 2*suspensionWidth+1;
@@ -129,7 +135,7 @@ module axleMountFrame(frameHeight)
         cylinder(d = screwHoleDiameter, h = holeDepth, center = true);
 
       // center part
-      cube([screwHoleDiameter,oblongHoleShortLength,holeDepth], center = true);
+      cube([screwHoleDiameter,oblongHoleShortLength,holeDepth], true);
     }
   }
 }

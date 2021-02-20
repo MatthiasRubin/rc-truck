@@ -1,4 +1,4 @@
-// this file defines the steering servo
+// this file defines a servo dummy
 
 
 // used modules
@@ -34,11 +34,11 @@ shaftHoleDiameter = 2;
 shaftHoleDepth = 5;
 
 
-// shows steering servo
+// shows servo dummy
 servo();
 
 
-// steering servo
+// servo dummy
 module servo()
 {
   difference()

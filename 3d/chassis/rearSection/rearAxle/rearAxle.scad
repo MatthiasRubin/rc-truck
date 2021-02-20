@@ -75,6 +75,8 @@ rearAxle();
 
 
 // assembled rear axle
+
+// width: axle width (including wheels)
 module rearAxle(width = 140)
 {
   translateZ(-axleMountHeight)
@@ -129,6 +131,8 @@ module rearAxle(width = 140)
 
 
 // axle housing top
+
+// width: width of housing
 module housingTop(width)
 {
   render() difference()
@@ -137,11 +141,13 @@ module housingTop(width)
     basicHousing(width);
     
     // remove top half
-    translateZ(-25.2) cube([width+1,50,50], center = true);
+    translateZ(-25.2) cube([width+1,50,50], true);
   }
 }
 
 // axle housing bottom
+
+// width: width of housing
 module housingBottom(width)
 {
   render() difference()
@@ -150,12 +156,14 @@ module housingBottom(width)
     basicHousing(width);
     
     // remove top half
-    translateZ(25.2) cube([width+1,50,50], center = true);
+    translateZ(25.2) cube([width+1,50,50], true);
   }
 }
 
 
 // basic axle housing
+
+// width: width of housing
 module basicHousing(width)
 {
   difference()
@@ -316,7 +324,7 @@ module basicHousing(width)
       
       // support to mount axle
       mirrorCopyX() translate([axleMountOffset,0,axleMountHeight/2])
-        cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
+        cube([axleMountSize,axleMountSize,axleMountHeight], true);
     }
     
     // hole for output shaft
@@ -460,6 +468,8 @@ module basicHousing(width)
 
 
 // left shaft
+
+// length: shate length
 module leftShaft(length)
 {
   difference()
@@ -489,18 +499,20 @@ module leftShaft(length)
     wheelHubLatchOffset = wheelHubLatchOffset + length;
     wheelHubLatchThickness = strongWall + 0.2;
     translateX(wheelHubLatchOffset)
-      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], center = true);
+      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], true);
     
     // flat bottom
     boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
     boxSize = 2*outputShaftDiameter + 2*thinWall;
     bottomOffset = boxSize/2 + sqrt(outputShaftDiameter^2 / 2)/2;
-    translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], center = true);
+    translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], true);
   }
 }
 
 
 // right shaft
+
+// length: shate length
 module rightShaft(length)
 {
   difference()
@@ -547,13 +559,13 @@ module rightShaft(length)
     wheelHubLatchOffset = wheelHubLatchOffset + length;
     wheelHubLatchThickness = strongWall + 0.2;
     translateX(-wheelHubLatchOffset)
-      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], center = true);
+      cube([wheelHubLatchSize,wheelHubLatchThickness,outputShaftDiameter], true);
     
     // flat bottom
     boxLength = 2*length + 2*outputShaftConnectionLenght + 1;
     boxSize = 2*outputShaftDiameter + 2*strongWall;
     bottomOffset = boxSize/2 + sqrt(outputShaftDiameter^2 / 2)/2;
-    translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], center = true);
+    translateZ(-bottomOffset) cube([boxLength,boxSize,boxSize], true);
   }
 }
 
@@ -585,7 +597,7 @@ module inputShaft()
     boxLength = 3*(inputBearingOffset2 + inputBearingWidth + inputShaftDiameter);
     boxSize = 2*inputShaftDiameter;
     bottomOffset = boxSize/2 + sqrt(inputShaftDiameter^2 / 2)/2;
-    translateZ(-bottomOffset) cube([boxSize,boxLength,boxSize], center = true);
+    translateZ(-bottomOffset) cube([boxSize,boxLength,boxSize], true);
   }
 }
 
@@ -620,7 +632,7 @@ module wheelHub()
     
     // hole for wheel hub latch
     translateZ(wheelHubLatchOffset)
-      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
+      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], true);
     
     // holes for wheel clip
     clipHoleHeight = strongWall;
@@ -628,8 +640,8 @@ module wheelHub()
     clipHoleDepth = 2*thinWall + 0.5;
     clipHoleOffsetY = getRimHoleDiameter()/2 - clipHoleDepth/2 + 0.5;
     clipHoleOffsetZ = strongWall + clipHoleHeight/2 + 2*getRimThickness();
-    rotateCopyZ(120,2, center = true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
-      cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], center = true);
+    rotateCopyZ(120,2,true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
+      cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], true);
   }
 }
 
@@ -641,7 +653,7 @@ module wheelHubLatch()
   latchSize = wheelHubLatchSize - 0.6;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
-    cube([latchSize,latchThickness,latchLength], center = true);
+    cube([latchSize,latchThickness,latchLength], true);
 }
 
 

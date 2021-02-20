@@ -35,6 +35,8 @@ rearSection();
 
 
 // assembled rear section
+
+// frameHeight: height of frame center
 module rearSection(frameHeight = 55)
 {
   translateZ(getRearAxleHeigth())
@@ -49,6 +51,8 @@ module rearSection(frameHeight = 55)
 
 
 // axle mount frame
+
+// frameHeight: height of frame center
 module axleMountFrame(frameHeight)
 {
   // mount frame
@@ -69,14 +73,14 @@ module axleMountFrame(frameHeight)
     scaleFactor = axleMountSizeTop/axleMountSizeBottom;
     axleMountOffset = getRearAxleConnectioOffset();
     linear_extrude(axleMountHeight, scale = [1,scaleFactor]) translateX(axleMountOffset) 
-      square(axleMountSizeBottom, center = true);
+      square(axleMountSizeBottom, true);
     
     // hollow axle mount
     scaleFactorHole = axleMountHoleSizeTop/screwHeadDiameter;
     axleMountHoleOffset = axleMountOffset - (axleMountSizeBottom - screwHeadDiameter)/2;
     translate([axleMountHoleOffset,0,axleMountThickness]) 
       linear_extrude(axleMountHoleHeight, scale = [1,scaleFactorHole])
-        square([axleMountSizeBottom,screwHeadDiameter], center = true);
+        square([axleMountSizeBottom,screwHeadDiameter], true);
     
     // hole to mount axle
     holeDepth = 2*axleMountThickness+1;
@@ -100,9 +104,10 @@ module axleMountFrame(frameHeight)
     supportThickness = (axleMountSizeTop - axleMountHoleSizeTop)/2;
     supportLength = getFrameWidth() - 2*getFrameThickness();
     mirrorCopyY() translateY(supportOffset) 
-      cube([supportLength,supportThickness,getFrameHeight()], center = true);
+      cube([supportLength,supportThickness,getFrameHeight()], true);
   }
 }
 
 
+// get input shaft offset of rear axle
 function getRearSectionShaftOffset() = [0,0,getRearAxleHeigth()] + getRearAxleShaftOffset();

@@ -30,7 +30,7 @@ screwDiameter = 3;
 
 // shows front axle suspension
 suspension();
-frontAxle();
+%frontAxle();
 
 
 // front axle suspension
@@ -98,7 +98,7 @@ module springLeaf(radius, length)
       
       // axle mount support
       mountSize = getFrontAxleMountSize();
-      cube([mountSize,mountSize,leafThickness], center = true);
+      cube([mountSize,mountSize,leafThickness], true);
     }
 
     // hole to mount axle

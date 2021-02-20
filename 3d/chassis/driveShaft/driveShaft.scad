@@ -35,10 +35,12 @@ driveShaft([10,150,20]);
 
 
 // assembled drive shaft
+
+// v: vector with drive shaft lenght and direction
 module driveShaft(v)
 {
   x = v[0];
-  y = v[1] - pinOffset;
+  y = v[1] - 2*pinOffset;
   z = v[2];
   
   rotZ = -atan(x/y);
@@ -62,6 +64,8 @@ module driveShaft(v)
 
 
 // shaft
+
+// length: length of shaft (joint to joint)
 module shaft(length)
 {
   // basic yokes

@@ -110,21 +110,21 @@ module profile()
       
       // remove unused parts
       translateX(sign(profileOffset[0])*outerProfileDiameter) 
-        cube(2*outerProfileDiameter, center = true);
+        cube(2*outerProfileDiameter, true);
       translateY(sign(profileOffset[1])*outerProfileDiameter) 
-        cube(2*outerProfileDiameter, center = true);
+        cube(2*outerProfileDiameter, true);
     }
     
     // interrupt profile
     profileGap = profileWidth/2;
     profileSize = profileWidth + 2*profileDepth;
     rotateZ(profileAngle) translateCopyX(-profileSize) 
-      cube([profileGap,2*profileSize,2*profileSize], center = true);
+      cube([profileGap,2*profileSize,2*profileSize], true);
     
     // remove unused parts
     profileCutOffOffset = (outerProfileDiameter+wheelWidth)/2;
-    translateX(-profileCutOffOffset) cube(outerProfileDiameter, center = true);
-    translateX(outerProfileDiameter/2) cube(outerProfileDiameter, center = true);
+    translateX(-profileCutOffOffset) cube(outerProfileDiameter, true);
+    translateX(outerProfileDiameter/2) cube(outerProfileDiameter, true);
   }
 }
 
@@ -196,7 +196,7 @@ module wheelClip()
       // clip gap
       clipGapOffset = clipDiameter/2;
       translateY(-clipGapOffset) 
-        cube([strongWall,clipDiameter,clipHoleDepth], center = true);
+        cube([strongWall,clipDiameter,clipHoleDepth], true);
     }
     
     // clip pins
@@ -206,8 +206,8 @@ module wheelClip()
     clipPinOffsetY = clipHoleDiameter/2 - clipPinDepth/2 + 0.2;
     clipPinOffsetZ = clipPinHeight/2;
     rotationAngle = 120 * rimHoleDiameter / clipHoleDiameter;
-    rotateCopyZ(rotationAngle,2, center = true) translate([0,clipPinOffsetY,clipPinOffsetZ])
-      cube([clipPinWidth,clipPinDepth,clipPinHeight], center = true);
+    rotateCopyZ(rotationAngle,2, true) translate([0,clipPinOffsetY,clipPinOffsetZ])
+      cube([clipPinWidth,clipPinDepth,clipPinHeight], true);
   }
 }
 

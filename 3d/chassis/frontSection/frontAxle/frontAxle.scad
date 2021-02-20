@@ -68,6 +68,8 @@ frontAxle();
 
 
 // assembled front axle
+
+// width: axle width (including wheels)
 module frontAxle(width = 140)
 {
   translateZ(-axleBeamThickness)
@@ -129,6 +131,8 @@ module frontAxle(width = 140)
 
 
 // axle beam: top half
+
+// length: length of axle beam (joint to joint)
 module axleBeamTop(length)
 {
   difference()
@@ -137,12 +141,14 @@ module axleBeamTop(length)
     basicAxleBeam(length);
     
     // remove bottom
-    translateZ(-length) cube(2*length, center = true);
+    translateZ(-length) cube(2*length, true);
   }
 }
 
 
 // axle beam: bottom half
+
+// length: length of axle beam (joint to joint)
 module axleBeamBottom(length)
 {
   difference()
@@ -151,12 +157,14 @@ module axleBeamBottom(length)
     basicAxleBeam(length);
     
     // remove top
-    translateZ(length) cube(2*length, center = true);
+    translateZ(length) cube(2*length, true);
   }
 }
 
 
 // basic axle beam
+
+// length: length of axle beam (joint to joint)
 module basicAxleBeam(length)
 {
   translateY(thinWall)
@@ -183,7 +191,7 @@ module basicAxleBeam(length)
         rotateX(90) cylinder(d = holeDiameter, h = holeDepth, center = true);
         
         // remove unused material
-        translateX(holeDepth/2) cube(holeDepth, center = true);
+        translateX(holeDepth/2) cube(holeDepth, true);
       }
       
       difference()
@@ -225,7 +233,7 @@ module basicAxleBeam(length)
         
         // support to mount axle
         mirrorCopyX() translate([axleMountOffset,-thinWall,0])
-          cube([axleMountSize,axleMountSize,axleMountHeight], center = true);
+          cube([axleMountSize,axleMountSize,axleMountHeight], true);
       }
       
       // holes to mount axle
@@ -246,6 +254,8 @@ module basicAxleBeam(length)
 }
 
 // doubled steering knuckle
+
+// steeringOffset: offset of steering joints (A-steering)
 module doubleSteeringKnuckle(steeringOffset)
 {
   // combine two steering knuckles
@@ -254,6 +264,8 @@ module doubleSteeringKnuckle(steeringOffset)
 
 
 // steering knuckle
+
+// steeringOffset: offset of steering joints (A-steering)
 module steeringKnuckle(steeringOffset)
 {
   // basic bearing housing
@@ -316,7 +328,7 @@ module bearingHousing()
     // flat bottom
     boxSize = 2*shaftHoleDiameter + 4*strongWall;
     boxOffset = boxSize/2 + 0.2;
-    translateZ(-boxOffset) cube(boxSize, center = true);
+    translateZ(-boxOffset) cube(boxSize, true);
   }
 }
 
@@ -334,7 +346,7 @@ module steeringRod(length)
     {
       // basic steering rod
       steeringRodLength = length - 2*steeringRodOffset;
-      cube([steeringRodLength,steeringRodWidth,steeringRodThickness], center = true);
+      cube([steeringRodLength,steeringRodWidth,steeringRodThickness], true);
     
       mirrorCopyX() translateX(steeringRodLength/2)
       {
@@ -342,7 +354,7 @@ module steeringRod(length)
         bracketLength = sqrt(2) * steeringRodOffset;
         bracketOffset = [steeringRodOffset/2,steeringRodOffset/2,0];
         translate(bracketOffset) rotateZ(45)
-          cube([bracketLength,steeringRodWidth,steeringRodThickness], center = true);
+          cube([bracketLength,steeringRodWidth,steeringRodThickness], true);
         
         // bracket roundings
         cylinder(d = steeringRodWidth, h = steeringRodThickness, center = true);
@@ -387,13 +399,13 @@ module shaft()
     // hole for wheel hub latch
     wheelHubLatchOffset = wheelHubLatchOffset + bearingWidth + strongWall + 0.2;
     translateZ(wheelHubLatchOffset)
-      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
+      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], true);
     
     // flat bottom
     boxLength = 3*(shaftConnectionLenght + bearingWidth);
     boxSize = 2*shaftDiameter;
     bottomOffset = boxSize/2 + sqrt(shaftDiameter^2 / 2)/2;
-    translateX(-bottomOffset) cube([boxSize,boxSize,boxLength], center = true);
+    translateX(-bottomOffset) cube([boxSize,boxSize,boxLength], true);
   }
 }
 
@@ -427,7 +439,7 @@ module wheelHub()
     
     // hole for wheel hub latch
     translateZ(wheelHubLatchOffset)
-      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], center = true);
+      cube([getRimHoleDiameter(),strongWall,wheelHubLatchSize], true);
     
     // holes for wheel clip
     clipHoleHeight = strongWall;
@@ -435,8 +447,8 @@ module wheelHub()
     clipHoleDepth = 2*thinWall + 0.5;
     clipHoleOffsetY = getRimHoleDiameter()/2 - clipHoleDepth/2 + 0.5;
     clipHoleOffsetZ = wheelOffset + clipHoleHeight/2;
-    rotateCopyZ(120,2, center = true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
-      cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], center = true);
+    rotateCopyZ(120,2,true) translate([0,clipHoleOffsetY,clipHoleOffsetZ])
+      cube([clipHoleWidth,clipHoleDepth,clipHoleHeight], true);
   }
 }
 
@@ -448,7 +460,7 @@ module wheelHubLatch()
   latchSize = wheelHubLatchSize - 0.8;
   latchThickness = strongWall - 0.1;
   translateX(wheelHubLatchOffset)
-    cube([latchSize,latchThickness,latchLength], center = true);
+    cube([latchSize,latchThickness,latchLength], true);
 }
 
 
@@ -470,6 +482,7 @@ module bearing()
 function getFrontAxleConnectioOffset() = axleMountDistance/2;
 
 
+// get front axle height
 function getFrontAxleHeigth() = axleBeamThickness + getWheelDiameter()/2;;
 
 

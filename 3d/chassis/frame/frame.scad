@@ -33,20 +33,23 @@ frame(150);
 
 
 // truck frame part
+
+// length: length of frame
+// support: add support
 module frame(length, support = true)
 {
-  if (length <= maxSectionLength || support == false)
+  if ((length <= maxSectionLength) || (support == false))
   {
     // frame is short enough
     difference()
     {
       // basic frame
-      cube([frameWidth,length,frameHeight], center = true);
+      cube([frameWidth,length,frameHeight], true);
       
       // hollow frame
       frameHoleWidth = frameWidth-2*frameThickness;
       frameHoleLength = length-2*frameThickness;
-      cube([frameHoleWidth,frameHoleLength,frameHeight+1], center = true);
+      cube([frameHoleWidth,frameHoleLength,frameHeight+1], true);
       
       mirrorCopyY() mirrorCopyX() 
       {
@@ -79,7 +82,7 @@ module frame(length, support = true)
     numberOfSections = ceil((length-frameThickness)/(maxSectionLength-frameThickness));
     frameOffset = (length-frameThickness)/numberOfSections;
     sectionLength = frameOffset + frameThickness;
-    translateCopyY(frameOffset,numberOfSections-1, center = true) frame(sectionLength);
+    translateCopyY(frameOffset,numberOfSections-1,true) frame(sectionLength);
   }
 }
 

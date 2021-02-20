@@ -1,4 +1,4 @@
-// this file defines the motor
+// this file defines a motor dummy
 
 
 // used modules
@@ -40,11 +40,11 @@ shaftLength = 36.3;
 shaftPhaseSize = 3.7;
 
 
-// shows motor
+// shows motor dummy
 motor();
 
 
-// motor
+// motor dummy
 module motor()
 {
   translateZ(-shaftOffset) difference()
